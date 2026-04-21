@@ -14,8 +14,7 @@ import BasicScripts from '~/components/common/BasicScripts.astro';
 import TagsHead from '~/components/common/TagsHead.astro';
 import TagsBody from '~/components/common/TagsBody.astro';
 
-// Comment the line below to disable View Transitions
-// Astro 5 renamed <ViewTransitions /> to <ClientRouter />.
+// Comment the line below to disable ClientRouter (Astro's SPA-style navigation).
 import { ClientRouter } from 'astro:transitions';
 
 import type { MetaData as MetaDataType } from '~/types';
@@ -40,7 +39,7 @@ const { language, textDirection } = I18N;
     <Analytics />
     <TagsHead />
 
-    <!-- Comment the line below to disable View Transitions -->
+    <!-- Comment the line below to disable ClientRouter -->
     <ClientRouter fallback="swap" />
 
   </head>
