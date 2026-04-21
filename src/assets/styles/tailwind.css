@@ -1,43 +1,110 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@layer utilities {
-  .bg-page {
-    background-color: var(--aw-color-bg-page);
-  }
-  .bg-dark {
-    background-color: var(--aw-color-bg-page-dark);
-  }
-  .bg-light {
-    background-color: var(--aw-color-bg-page);
-  }
-  .text-page {
-    color: var(--aw-color-text-page);
-  }
-  .text-muted {
-    color: var(--aw-color-text-muted);
+@plugin "@tailwindcss/typography";
+
+/* ---------------------------------------------------------------------------
+ * Class-based dark mode (preserves the .dark-on-<html> toggle from v3 config).
+ * v4 defaults to @media (prefers-color-scheme); we override with a custom
+ * variant so `dark:` modifiers activate whenever an ancestor has `.dark`.
+ * ------------------------------------------------------------------------- */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+ * Theme tokens — port of the old `tailwind.config.js` `theme.extend` block.
+ * Values are wired to the AstroWind `--aw-*` CSS variables that
+ * `src/components/CustomStyles.astro` sets on :root / .dark.
+ * ------------------------------------------------------------------------- */
+@theme {
+  --color-primary: var(--aw-color-primary);
+  --color-secondary: var(--aw-color-secondary);
+  --color-accent: var(--aw-color-accent);
+  --color-default: var(--aw-color-text-default);
+  --color-muted: var(--aw-color-text-muted);
+
+  --font-sans: var(--aw-font-sans, ui-sans-serif), ui-sans-serif, system-ui,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+  --font-serif: var(--aw-font-serif, ui-serif), ui-serif, Georgia, Cambria,
+    'Times New Roman', Times, serif;
+  --font-heading: var(--aw-font-heading, ui-sans-serif), ui-sans-serif,
+    system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* ---------------------------------------------------------------------------
+ * v3 → v4 compatibility: v4 changed the default border-color from
+ * `gray-200` to `currentColor`, which would silently tint every border
+ * that doesn't specify a color. Restore the v3 default.
+ * ------------------------------------------------------------------------- */
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
   }
 }
 
-@layer components {
-  .btn {
-    @apply inline-flex items-center justify-center rounded-full border-gray-400 border bg-transparent font-medium text-center text-base text-page leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200 focus:ring-blue-500 focus:ring-offset-blue-200 focus:ring-2 focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600 dark:text-slate-300 dark:border-slate-500 dark:hover:bg-slate-800 dark:hover:border-slate-800 cursor-pointer;
-  }
-
-  .btn-primary {
-    @apply btn font-semibold bg-primary text-white border-primary hover:bg-secondary hover:border-secondary hover:text-white dark:text-white dark:bg-primary dark:border-primary dark:hover:border-secondary dark:hover:bg-secondary;
-  }
-
-  .btn-secondary {
-    @apply btn;
-  }
-
-  .btn-tertiary {
-    @apply btn border-none shadow-none text-muted hover:text-gray-900 dark:text-gray-400 dark:hover:text-white;
-  }
+/* ---------------------------------------------------------------------------
+ * Surface-background utilities. Kept as explicit `@utility` blocks
+ * because "page/dark/light" are surface primitives, not text tokens.
+ *
+ * Text colors live in the `@theme` block above — Tailwind v4 auto-generates
+ * `text-default`, `text-muted`, `text-primary`, etc. from those tokens, so
+ * no custom `@utility text-*` blocks are needed (and registering duplicates
+ * would shadow the auto-generated ones).
+ * ------------------------------------------------------------------------- */
+@utility bg-page {
+  background-color: var(--aw-color-bg-page);
+}
+@utility bg-dark {
+  background-color: var(--aw-color-bg-page-dark);
+}
+@utility bg-light {
+  background-color: var(--aw-color-bg-page);
 }
 
+/* ---------------------------------------------------------------------------
+ * Button component classes — were `@layer components` in v3. v4 allows
+ * `@apply` of any utility (including the custom `@utility` ones above), so
+ * this block ports cleanly. `.btn-primary` etc. keep composing on `.btn`
+ * via `@apply btn …`.
+ *
+ * NOTE: we register `btn` as a `@utility` (not inside `@layer components`)
+ * so that `@apply btn …` works from `.btn-primary`. In v4, `@apply` can
+ * only reference utilities, not arbitrary component classes.
+ * ------------------------------------------------------------------------- */
+@utility btn {
+  @apply inline-flex items-center justify-center rounded-full border-gray-400
+    border bg-transparent font-medium text-center text-base text-default
+    leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200
+    focus:ring-blue-500 focus:ring-offset-blue-200 focus:ring-2
+    focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600
+    dark:text-slate-300 dark:border-slate-500 dark:hover:bg-slate-800
+    dark:hover:border-slate-800 cursor-pointer;
+}
+
+@utility btn-primary {
+  @apply btn font-semibold bg-primary text-white border-primary
+    hover:bg-secondary hover:border-secondary hover:text-white
+    dark:text-white dark:bg-primary dark:border-primary
+    dark:hover:border-secondary dark:hover:bg-secondary;
+}
+
+@utility btn-secondary {
+  @apply btn;
+}
+
+@utility btn-tertiary {
+  @apply btn border-none shadow-none text-muted
+    hover:text-gray-900 dark:text-gray-400 dark:hover:text-white;
+}
+
+/* ---------------------------------------------------------------------------
+ * Site-specific overrides — plain CSS, not utilities. `@apply` inside a
+ * rule still works in v4 as long as the referenced classes are utilities.
+ * ------------------------------------------------------------------------- */
 #header.scroll > div:first-child {
   @apply bg-page md:bg-white/90 md:backdrop-blur-md;
   box-shadow: 0 0.375rem 1.5rem 0 rgb(140 152 164 / 13%);
@@ -47,9 +114,6 @@
   @apply bg-page md:bg-[#030621e6] border-b border-gray-500/20;
   box-shadow: none;
 }
-/* #header.scroll > div:last-child {
-  @apply py-3;
-} */
 
 #header.expanded nav {
   position: fixed;
