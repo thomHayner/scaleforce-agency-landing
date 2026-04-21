@@ -34,11 +34,14 @@
     "astro-embed": "^0.7.2",
     "astro-icon": "^1.1.1",
     "contentful": "^10.12.7",
+    "gray-matter": "^4.0.3",
     "limax": "4.1.0",
     "lodash.merge": "^4.6.2",
     "react": "^18.3.1",
     "react-calendly": "^4.3.1",
     "react-dom": "^18.3.1",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1",
     "unpic": "^3.18.0"
   },
   "devDependencies": {
