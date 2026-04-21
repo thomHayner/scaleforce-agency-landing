@@ -1,6 +1,6 @@
 Vendored Astro integration originally derived from the AstroWind template.
 
-Provides the `astrowind:config` virtual module (resolved by the Vite plugin
+Provides the `site:config` virtual module (resolved by the Vite plugin
 in `./integration/index.ts`) that exposes parsed `src/config.yaml` values —
 `SITE`, `I18N`, `METADATA`, `APP_BLOG`, `UI`, `ANALYTICS` — to components
 via typed imports.
