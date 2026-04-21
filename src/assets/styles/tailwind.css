@@ -47,9 +47,13 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Custom utilities — were `@layer utilities` in v3. In v4 these must be
- * registered via `@utility` so they can be used inside `@apply` (e.g. the
- * `.btn` definition below references `text-page`).
+ * Surface-background utilities. Kept as explicit `@utility` blocks
+ * because "page/dark/light" are surface primitives, not text tokens.
+ *
+ * Text colors live in the `@theme` block above — Tailwind v4 auto-generates
+ * `text-default`, `text-muted`, `text-primary`, etc. from those tokens, so
+ * no custom `@utility text-*` blocks are needed (and registering duplicates
+ * would shadow the auto-generated ones).
  * ------------------------------------------------------------------------- */
 @utility bg-page {
   background-color: var(--aw-color-bg-page);
@@ -59,12 +63,6 @@
 }
 @utility bg-light {
   background-color: var(--aw-color-bg-page);
-}
-@utility text-page {
-  color: var(--aw-color-text-page);
-}
-@utility text-muted {
-  color: var(--aw-color-text-muted);
 }
 
 /* ---------------------------------------------------------------------------
@@ -79,7 +77,7 @@
  * ------------------------------------------------------------------------- */
 @utility btn {
   @apply inline-flex items-center justify-center rounded-full border-gray-400
-    border bg-transparent font-medium text-center text-base text-page
+    border bg-transparent font-medium text-center text-base text-default
     leading-snug transition py-3.5 px-6 md:px-8 ease-in duration-200
     focus:ring-blue-500 focus:ring-offset-blue-200 focus:ring-2
     focus:ring-offset-2 hover:bg-gray-100 hover:border-gray-600
