@@ -1,14 +1,21 @@
 import getReadingTime from 'reading-time';
 import { toString } from 'mdast-util-to-string';
 import { visit } from 'unist-util-visit';
-import type { MarkdownAstroData, RehypePlugin, RemarkPlugin } from '@astrojs/markdown-remark';
+import type { RehypePlugin, RemarkPlugin } from '@astrojs/markdown-remark';
+
+// Astro 5 removed the `MarkdownAstroData` export from `@astrojs/markdown-remark`.
+// The shape of `file.data.astro` still includes the `frontmatter` bag used by
+// frontmatter-injection plugins, so we inline the minimal contract here.
+interface AstroVFileData {
+  frontmatter: Record<string, unknown>;
+}
 
 export const readingTimeRemarkPlugin: RemarkPlugin = () => {
   return function (tree, file) {
     const textOnPage = toString(tree);
     const readingTime = Math.ceil(getReadingTime(textOnPage).minutes);
 
-    (file.data.astro as MarkdownAstroData).frontmatter.readingTime = readingTime;
+    (file.data.astro as AstroVFileData).frontmatter.readingTime = readingTime;
   };
 };
 

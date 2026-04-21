@@ -1,5 +1,5 @@
 import type { PaginateFunction } from 'astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import type { FormattedContentfulPost, Post } from '~/types';
 import { APP_BLOG } from 'astrowind:config';
@@ -48,8 +48,13 @@ const generatePermalink = async ({
 };
 
 const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> => {
-  const { id, slug: rawSlug = '', data } = post;
-  const { Content, remarkPluginFrontmatter } = await post.render();
+  // In Astro 5's Content Layer API, `post.id` is the slug-like identifier
+  // (e.g. "ai-agents-to-reduce-employee-turnover-1") rather than the
+  // filename-with-extension used in Astro 4. There is no separate `slug`
+  // field anymore, so the id doubles as the raw slug.
+  const { id, data } = post;
+  const rawSlug = id;
+  const { Content, remarkPluginFrontmatter } = await render(post);
 
   const {
     publishDate: rawPublishDate = new Date(),
