@@ -1,3 +1,9 @@
+<!--
+Base branch convention:
+  - Feature/fix/chore PRs should target `dev` (staging).
+  - Release PRs promoting staging to production should target `main` from `dev`.
+-->
+
 ## Context
 *Gives the reviewer some context about the work and why this change is being made, the WHY you are doing this. This field goes more into the product perspective.*
 
