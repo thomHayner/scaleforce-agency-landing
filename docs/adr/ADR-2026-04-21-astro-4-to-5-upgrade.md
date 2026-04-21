@@ -8,7 +8,7 @@ tags: [astro, upgrade, content-layer]
 supersedes: []
 superseded_by: []
 related: [ADR-2026-04-21-multi-source-blog-architecture]
-source: claude-code-session-2026-04-21
+source: claude-code-session-2026-04-21 astro-4-to-5-upgrade
 ---
 
 ## Context
