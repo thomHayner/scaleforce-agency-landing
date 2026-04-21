@@ -11,7 +11,8 @@
 
 /* ---------------------------------------------------------------------------
  * Theme tokens — port of the old `tailwind.config.js` `theme.extend` block.
- * Values are wired to the AstroWind `--aw-*` CSS variables that
+ * Values are wired to the `--aw-*` CSS variables (originally named by the
+ * AstroWind template this project derived from) that
  * `src/components/CustomStyles.astro` sets on :root / .dark.
  * ------------------------------------------------------------------------- */
 @theme {
