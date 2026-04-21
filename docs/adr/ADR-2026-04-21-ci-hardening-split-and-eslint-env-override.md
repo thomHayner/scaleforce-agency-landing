@@ -22,12 +22,13 @@ The multi-phase upgrade plan calls for CI hardening (Phase 1) before the Astro 4
 
 ## Decision
 
-Four linked changes, all scoped to CI/tooling and not touching application code:
+Five linked changes, all scoped to CI/tooling and not touching application code:
 
-1. **Split the `check` job** in `.github/workflows/actions.yaml` into three parallel jobs — `typecheck` (runs `check:astro`), `lint` (runs `check:eslint`), and `format` (runs `check:prettier`) — each on Node 22. The `build` matrix job (Node 20 + 22) stays as-is.
+1. **Split the `check` job** in `.github/workflows/actions.yaml` into parallel jobs — `typecheck` (runs `check:astro`) and `lint` (runs `check:eslint`) — each on Node 22. The `build` matrix job (Node 20 + 22) stays as-is.
 2. **Override `@typescript-eslint/triple-slash-reference` for `src/env.d.ts` only** via a per-file ESLint config block, and revert the file's contents to the triple-slash form that `astro sync` produces. All other ESLint rules still apply to the file.
 3. **Add an explicit `actions/cache@v4` step** in every job, keyed on `package-lock.json`, supplementing `setup-node`'s built-in cache.
 4. **Enable Dependabot for the `github-actions` ecosystem** via `.github/dependabot.yml`, weekly, labeled `dependencies` + `ci`.
+5. **Remove prettier from the toolchain entirely** — dropped from CI (`format` job removed), removed from `package.json` devDependencies and scripts, and config files deleted. The project doesn't use prettier in practice (inherited from AstroWind template) and 30 files of accumulated formatting drift confirms nobody runs it locally.
 
 ## Alternatives considered
 
@@ -35,12 +36,13 @@ Four linked changes, all scoped to CI/tooling and not touching application code:
 - **Change `src/env.d.ts` to `import type {} from 'astro/client'`** (the form on `dev` today, from commit 0f062ae) — rejected because `astro sync` regenerates the file on every `astro check` run with the triple-slash directive, clobbering the edit and putting the working tree out of sync with what CI sees.
 - **Keep the monolithic `check` job** — rejected because fail-fast masking means a single broken PR can take 3 CI runs to fully diagnose (fix typecheck → see lint failure → fix lint → see format failure).
 - **Skip the explicit cache action** — rejected for minimal complexity cost; `setup-node`'s cache is sometimes invalidated unexpectedly and the belt-and-suspenders pair measurably improves cold installs.
+- **Auto-format all 30 drift files then keep enforcing prettier** — rejected because the team doesn't use prettier in practice, so enforcement creates PR friction without stylistic benefit. A future ADR may evaluate Biome as a faster combined lint+format replacement.
 
 ## Consequences
 
-- **Positive:** failures in typecheck, lint, and format are now separately visible in the PR checks UI. `src/env.d.ts` is consistent between local dev (what `astro sync` produces) and CI. Dependabot will keep pinned GitHub Actions fresh. Cache hit rate on `npm ci` should improve.
-- **Negative:** total CI job count rises from 3 (check + build×2) to 5 (typecheck + lint + format + build×2), so concurrent-job minutes go up marginally. `src/env.d.ts` no longer enforces the triple-slash rule (still enforced everywhere else in the repo).
-- **Follow-ups:** the human must update branch protection on `main` and `dev` to require the new status check names (`typecheck`, `lint`, `format`, `build (20)`, `build (22)`, `Vercel`) and drop any stale `build (18)` / `check` requirements. That's HS-2 and is out of scope for this PR.
+- **Positive:** failures in typecheck and lint are now separately visible in the PR checks UI. `src/env.d.ts` is consistent between local dev (what `astro sync` produces) and CI. Dependabot will keep pinned GitHub Actions fresh. Cache hit rate on `npm ci` should improve. Dropping prettier removes a dead tool and clears 30 files of fake "drift" from the CI signal.
+- **Negative:** total CI job count rises from 3 (check + build×2) to 4 (typecheck + lint + build×2), so concurrent-job minutes go up marginally. `src/env.d.ts` no longer enforces the triple-slash rule (still enforced everywhere else in the repo). Prettier is no longer enforced anywhere — editor-level formatting via `.editorconfig` or IDE settings remains the contributor's responsibility. Future contributors can propose Biome in a separate ADR if unified formatting is wanted again.
+- **Follow-ups:** the human must update branch protection on `main` and `dev` to require the new status check names (`typecheck`, `lint`, `build (20)`, `build (22)`, `Vercel`) and drop any stale `build (18)` / `check` / `format` requirements. That's HS-2 and is out of scope for this PR.
 
 ## Notes
 
