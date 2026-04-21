@@ -39,6 +39,23 @@ Astro is a great base to start building static websites from and AstroWind is ev
 
 ## DevOps
 
+### Branching workflow
+
+This repo uses a `feature → dev → main` flow:
+
+- **`main`** — production. Deploys to the live site. Never push directly; merges land only via PR from `dev`.
+- **`dev`** — staging. Integration branch used to verify changes on the staging deploy before release.
+- **feature branches** — short-lived branches (e.g. `feat/...`, `fix/...`, `chore/...`) cut from `dev`.
+
+Standard flow:
+
+1. Branch from `dev`: `git checkout dev && git pull && git checkout -b feat/my-change`
+2. Open a PR targeting `dev`. CI must pass.
+3. Once merged to `dev`, verify on the staging deploy.
+4. When a release is ready, open a PR from `dev` → `main`. Merging triggers the production deploy.
+
+Hotfixes may branch from `main` directly, but must be back-merged to `dev` immediately after release.
+
 ### Netlify
 
 There are currently two Netlify "Build & Deploy" triggers.  

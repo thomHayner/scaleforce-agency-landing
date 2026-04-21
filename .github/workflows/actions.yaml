@@ -3,10 +3,12 @@ name: GitHub Actions
 on:
   pull_request:
     branches:
-      - staging # - main
+      - main
+      - dev
   push:
     branches:
-      - staging # - main
+      - main
+      - dev
 
 jobs:
   build:
