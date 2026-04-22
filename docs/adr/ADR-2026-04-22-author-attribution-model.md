@@ -47,11 +47,18 @@ when `authorRef` is present, and falls back to the plain string slug
 otherwise. The compact date-row byline prefers `authorRef.name` and
 falls back to the slug.
 
-The initial seed has two entries:
+The initial Contentful seed:
 
-- `scaleforce` (organization) — avatar points to the repo logo.
-- `thom-hayner` (person) — avatar points to a selfie, `personalSite`
-  set to `https://thomhayner.com`.
+- `scaleforce` (organization) — published with the repo logo as avatar.
+- `thom-hayner` (person) — **deferred follow-up in this PR.** The
+  selfie intended as the avatar wasn't persisted to disk during the
+  authoring session, so the asset upload + entry creation couldn't
+  complete. Until that entry exists, syndicated thomhayner.com posts
+  byline as the literal slug `thom-hayner` (the resolver returns
+  `undefined` for an unknown slug and the UI falls back to the plain
+  string). Target entry shape: name="Thom Hayner", type="person",
+  avatar=selfie, bio="AI Solution Engineer",
+  personalSite="https://thomhayner.com".
 
 ## Alternatives considered
 

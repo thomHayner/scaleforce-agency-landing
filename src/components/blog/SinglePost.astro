@@ -16,6 +16,21 @@ export interface Props {
 }
 
 const { post, url } = Astro.props;
+
+// Validate `personalSite` before rendering — the URL comes from a CMS field so
+// we guard against non-http(s) protocols (`javascript:`, `data:`) and malformed
+// URLs rather than dropping the raw string into an `href`.
+const personalSiteHref = (() => {
+  const raw = post.authorRef?.type === 'person' ? post.authorRef.personalSite : undefined;
+  if (!raw) return undefined;
+  try {
+    const u = new URL(raw);
+    if (!['http:', 'https:'].includes(u.protocol)) return undefined;
+    return u.toString();
+  } catch {
+    return undefined;
+  }
+})();
 ---
 
 <section class="py-8 sm:py-16 lg:py-20 mx-auto">
@@ -85,14 +100,14 @@ const { post, url } = Astro.props;
               {post.authorRef.bio && (
                 <span class="text-sm text-muted dark:text-slate-400">{post.authorRef.bio}</span>
               )}
-              {post.authorRef.type === 'person' && post.authorRef.personalSite && (
+              {personalSiteHref && (
                 <a
-                  href={post.authorRef.personalSite}
+                  href={personalSiteHref}
                   class="text-sm text-primary hover:underline"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {post.authorRef.personalSite.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                  {personalSiteHref.replace(/^https?:\/\//, '').replace(/\/$/, '')}
                 </a>
               )}
             </div>
