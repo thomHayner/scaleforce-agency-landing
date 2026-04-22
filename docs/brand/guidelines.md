@@ -58,35 +58,54 @@ block in [`src/assets/styles/tailwind.css`](../../src/assets/styles/tailwind.css
 
 ## Logo
 
-The existing PNG wordmark ([`src/assets/images/logo.png`](../../src/assets/images/logo.png))
-is kept as-is for Wave 2. It renders through
-[`src/components/Logo.astro`](../../src/components/Logo.astro) alongside
-the site name.
+Single source of truth — the chip mark that doubles as the favicon. Same
+design across the site, favicon, and OG image.
 
-Known constraints, carried over:
+- **Component**: [`src/components/Logo.astro`](../../src/components/Logo.astro) — inline SVG
+  using `fill="currentColor"`. Paints whatever the ancestor text color is, so
+  it follows light/dark automatically (cobalt via `text-primary` by default).
+- **Favicon**: [`src/assets/favicons/favicon.svg`](../../src/assets/favicons/favicon.svg) — same paths, uses a
+  `<style>` block with `prefers-color-scheme` so it tints itself without JS.
+- **Mask icon** (Safari pinned tab): set to `--aw-color-primary` (`#4F7CFF`)
+  in [`src/components/Favicons.astro`](../../src/components/Favicons.astro).
 
-- PNG raster — no SVG source yet. Follow-up: produce SVG with light/dark
-  variants so the mark inherits `currentColor` and paints correctly against
-  both surfaces.
-- The `Image` component emits a densities-`[1.5, 2]` srcset, so sizing on
-  retina is fine.
-- No tagline / lockup variant defined.
+Since the mark is `currentColor`, it composes cleanly on any surface — no
+more "don't place the logo here" caveats.
 
-Until the SVG lands, don't place the logo on surfaces other than
-`bg-page` (either mode).
+## OG / social images
 
-## What's NOT in scope for Wave 2
+Regenerated at build time by [`scripts/build-og.mjs`](../../scripts/build-og.mjs) using `satori` +
+`@resvg/resvg-js`. Output: [`src/assets/images/default.png`](../../src/assets/images/default.png) (1200×630).
+
+- Runs automatically via `prebuild` npm hook.
+- Fonts are fetched once from Google Fonts and cached under
+  `scripts/.fonts-cache/` (gitignored).
+- Brand tokens are currently **duplicated** inside the script as plain hex
+  constants. Keep them in sync with [`CustomStyles.astro`](../../src/components/CustomStyles.astro) when the palette
+  shifts — there's no runtime token source the build script can read, and
+  parsing the Astro component would be overkill.
+
+To regenerate manually:
+
+```bash
+npm run build:og
+```
+
+Per-page OG overrides still flow through the existing `openGraph` metadata
+pipeline — the build script only replaces the default image.
+
+## What's NOT in scope for Wave 3
 
 Tracked as follow-ups, not silent gaps:
 
-- **SVG logo + light/dark variants** → Wave 3.
-- **Favicon refresh** — current [`favicon.svg`](../../src/assets/favicons/favicon.svg)
-  is being re-verified against the new palette but not redrawn.
-- **OG/social image** — [`src/assets/images/default.png`](../../src/assets/images/default.png)
-  is unchanged. Regeneration requires image tooling outside this PR.
+- **Per-page dynamic OG images** (e.g. one per blog post) — the current
+  script only generates the default. Extending to per-route OGs is Wave 4+.
+- **Apple touch icon regen** — [`apple-touch-icon.png`](../../src/assets/favicons/apple-touch-icon.png) is still the
+  original raster; re-rendering it through the same satori pipeline would
+  tighten consistency but is low priority.
 - **Component-level re-theming** — buttons/links already consume the tokens
-  above, so this lands automatically. Deeper component revisions live in
-  Phase 7 Wave 3+.
+  above, so palette changes land automatically. Deeper component revisions
+  belong to later Phase 7 waves.
 
 ## When you touch this file
 
