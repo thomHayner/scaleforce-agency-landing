@@ -12,6 +12,8 @@ import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 import { loadThomhaynerPosts } from "../lib/thomhayner/thomhayner";
 import type { FormattedThomhaynerPost } from "../lib/thomhayner/thomhayner";
 
+import { getAuthorBySlug } from "../lib/authors/authors";
+
 const generatePermalink = async ({
   id,
   slug,
@@ -85,6 +87,8 @@ const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> =
     title: tag,
   }));
 
+  const authorRef = await getAuthorBySlug(author);
+
   return {
     id: id,
     slug: slug,
@@ -101,6 +105,7 @@ const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> =
     category: category,
     tags: tags,
     author: author,
+    authorRef: authorRef,
 
     metadata,
 
@@ -146,6 +151,8 @@ const getNormalizedContentfulPost = async (post: FormattedContentfulPost): Promi
     title: tag,
   }));
 
+  const authorRef = await getAuthorBySlug(author);
+
   return {
     id: id,
     slug: slug,
@@ -162,6 +169,7 @@ const getNormalizedContentfulPost = async (post: FormattedContentfulPost): Promi
     category: category,
     tags: tags,
     author: author,
+    authorRef: authorRef,
 
     metadata,
 
@@ -203,6 +211,8 @@ const getNormalizedThomhaynerPost = async (post: FormattedThomhaynerPost): Promi
     title: tag,
   }));
 
+  const authorRef = await getAuthorBySlug(author);
+
   return {
     id: id,
     slug: slug,
@@ -219,6 +229,7 @@ const getNormalizedThomhaynerPost = async (post: FormattedThomhaynerPost): Promi
     category: category,
     tags: tags,
     author: author,
+    authorRef: authorRef,
 
     metadata,
 

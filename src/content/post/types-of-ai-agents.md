@@ -6,7 +6,7 @@ image: https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2765&
 category: Resources
 tags:
   - AI Agents
-author: ScaleForce
+author: scaleforce
 ---
 
 ## Overview of AI Agents

@@ -16,6 +16,21 @@ export interface Props {
 }
 
 const { post, url } = Astro.props;
+
+// Validate `personalSite` before rendering — the URL comes from a CMS field so
+// we guard against non-http(s) protocols (`javascript:`, `data:`) and malformed
+// URLs rather than dropping the raw string into an `href`.
+const personalSiteHref = (() => {
+  const raw = post.authorRef?.type === 'person' ? post.authorRef.personalSite : undefined;
+  if (!raw) return undefined;
+  try {
+    const u = new URL(raw);
+    if (!['http:', 'https:'].includes(u.protocol)) return undefined;
+    return u.toString();
+  } catch {
+    return undefined;
+  }
+})();
 ---
 
 <section class="py-8 sm:py-16 lg:py-20 mx-auto">
@@ -26,11 +41,11 @@ const { post, url } = Astro.props;
           <Icon name="tabler:clock" class="w-4 h-4 inline-block -mt-0.5 dark:text-gray-400" />
           <time datetime={String(post.publishDate)} class="inline-block">{getFormattedDate(post.publishDate)}</time>
           {
-            post.author && (
+            (post.authorRef?.name || post.author) && (
               <>
                 {' '}
                 · <Icon name="tabler:user" class="w-4 h-4 inline-block -mt-0.5 dark:text-gray-400" />
-                <span class="inline-block">{post.author}</span>
+                <span class="inline-block">{post.authorRef?.name ?? post.author}</span>
               </>
             )
           }
@@ -65,6 +80,40 @@ const { post, url } = Astro.props;
       >
         {post.excerpt}
       </p>
+
+      {
+        post.authorRef && (
+          <div class="max-w-3xl mx-auto mt-4 mb-8 px-4 sm:px-6 flex items-center gap-4">
+            {post.authorRef.avatarUrl && (
+              <img
+                src={post.authorRef.avatarUrl}
+                alt={post.authorRef.name}
+                width={56}
+                height={56}
+                loading="lazy"
+                decoding="async"
+                class="w-14 h-14 rounded-full object-cover bg-gray-100 dark:bg-slate-700"
+              />
+            )}
+            <div class="flex flex-col">
+              <span class="font-semibold text-default">{post.authorRef.name}</span>
+              {post.authorRef.bio && (
+                <span class="text-sm text-muted dark:text-slate-400">{post.authorRef.bio}</span>
+              )}
+              {personalSiteHref && (
+                <a
+                  href={personalSiteHref}
+                  class="text-sm text-primary hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {personalSiteHref.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                </a>
+              )}
+            </div>
+          </div>
+        )
+      }
 
       {
         post.image ? (

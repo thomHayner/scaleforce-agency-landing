@@ -6,7 +6,7 @@ image: https://images.unsplash.com/photo-1530545002211-21753020f4c8?q=80&w=2809&
 category: Resources
 tags:
   - AI Assistants
-author: ScaleForce
+author: scaleforce
 ---
 
 ## Overview of AI Assistants
