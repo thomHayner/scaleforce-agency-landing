@@ -52,7 +52,7 @@ npm run check    # astro check + eslint (CI parity)
 npm run fix      # eslint --fix
 ```
 
-**Prettier is gone.** It was removed from the repo. Do not reintroduce it, do not add a `.prettierrc`, do not run `prettier`. ESLint owns formatting-adjacent concerns.
+**Prettier is not part of this project's toolchain.** No `prettier` script, no `.prettierrc*`, no CI step. Do not add one, do not run `prettier`, do not commit config. (It may still appear transitively in `package-lock.json` via `@astrojs/check` — that's expected and fine; don't try to purge it.) ESLint owns formatting-adjacent concerns.
 
 ## Styling conventions
 
