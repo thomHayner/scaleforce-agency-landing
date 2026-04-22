@@ -5,19 +5,8 @@ import Button from '~/components/ui/Button.astro';
 const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } = Astro.props;
 ---
 
-<form
-  data-netlify="true"
-  data-netlify-recaptcha="true"
-  netlify-honeypot
-  name="feedback"
-  method="POST"
-  action="/success"
->
-  <p class="hidden">
-    <label>
-      Don’t fill this out if you’re human: <input name="bot-field" />
-    </label>
-  </p>
+<!-- Submission handler not yet wired (Phase 7 Wave 2). Form is intentionally non-submitting: onsubmit preventDefault + disabled button. -->
+<form onsubmit="event.preventDefault(); return false;">
   {
     inputs &&
       inputs.map(
@@ -79,13 +68,11 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
     )
   }
 
-  <div data-netlify-recaptcha="true" class="flex justify-around mt-10"><!-- <div>captcha</div> --></div>
-
   {
     button && (
       <div class="mt-10 grid">
-        <Button variant="primary" type="submit">
-          {button}
+        <Button variant="primary" type="button" disabled aria-disabled="true">
+          {button} (form not yet wired)
         </Button>
       </div>
     )
