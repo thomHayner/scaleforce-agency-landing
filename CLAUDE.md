@@ -75,6 +75,121 @@ The maintainer works with Claude agents and chip-spawned sub-tasks heavily. Some
 - **Chip out follow-ups** instead of scope-creeping the current PR. If you notice something worth fixing that isn't on the critical path, flag it as a separate task.
 - **Prefer ADRs over inline commentary** for load-bearing decisions. If a PR description is turning into a design document, it probably wants an ADR instead.
 
+## LLM-Wiki (`wiki/`)
+
+This repo uses the Karpathy LLM-Wiki pattern as a persistent, LLM-maintained knowledge base. `wiki/` is an LLM-owned synthesis layer that sits between you and the raw sources: instead of re-deriving knowledge via ad-hoc RAG on every question, the LLM compiles it into interlinked markdown pages that compound over time. **Humans read `wiki/`; the LLM writes it.** See [`wiki/README.md`](wiki/README.md) for human-facing orientation. The rules below are the operating schema — follow them when ingesting, querying, or linting the wiki.
+
+### Source layers
+
+The wiki synthesizes from, but does **not** modify, these sources:
+
+- `docs/` — project documentation, technical specifications, operational guides.
+- `docs/adr/` — architectural decision records. Treat each ADR as the authoritative record of a past decision; the wiki summarizes and cross-references, but the ADR itself is canon.
+- Git history — commit messages and merged PRs. Use `gh pr list --state merged --limit N`, `gh pr view <n>`, and `git log --oneline` for PR and commit context.
+- `README.md`, `CONTRIBUTING.md`, and other top-level project guides.
+- Any additional sources the user adds over time (meeting transcripts, external articles, design notes) — treat them the same way.
+
+### Wiki structure
+
+- `wiki/pages/*.md` — synthesized pages. Flat layout; introduce subcategories only when the flat layout genuinely stops scaling (typically past ~100 pages).
+- `wiki/index.md` — content-oriented catalog. Update on every ingest. Start here when answering a query — it's faster than scanning `pages/` directly.
+- `wiki/log.md` — chronological, append-only record of ingests, queries, lint passes, and manual edits. Each entry prefixed with `## [YYYY-MM-DD] <op> | <subject>` so the log is grep-able.
+- `wiki/README.md` — human-facing entry point. Don't rewrite during routine operations.
+
+### Page conventions
+
+Every page under `wiki/pages/` has YAML frontmatter:
+
+```yaml
+---
+title: <human-readable title>
+type: <source | entity | concept | feature | decision | analysis>
+sources: [<paths, PR numbers, ADR ids, URLs>]
+updated: YYYY-MM-DD
+---
+```
+
+- **title** — set explicitly; not derived from the filename.
+- **type** — one of the categories in `index.md`. Adding a new type is fine — just add a matching section to the index.
+- **sources** — every substantive claim on the page must trace back to at least one item in this list. If a claim has no source, either drop it or mark it clearly as synthesis/inference in the prose.
+- **updated** — the date of the most recent substantive revision. Bump it whenever the page changes.
+
+**Filenames** are kebab-case, short, and describe the subject: `overpass-caching.md`, `i18n-namespaces.md`, `pr-142-lazy-route-loading.md`. Not `notes.md` or `stuff-about-auth.md`.
+
+**Internal links** use markdown relative links from the linking page: `[the Overpass cache](./overpass-caching.md)`. Keep them bidirectional where it aids navigation — if A references B, mention A somewhere on B.
+
+**Splitting.** When a page passes ~400 lines, consider splitting by subtopic. One focused page is more maintainable than one sprawling one.
+
+### Operations
+
+#### Ingest
+
+When the user asks to ingest a source:
+
+1. **Read the source completely.** Skimming produces shallow summaries that pollute the wiki. If the source is long, read it in full — that's the point.
+2. **Discuss key takeaways briefly with the user** before writing. Confirm what matters; this is cheaper than rewriting a page after filing.
+3. **Create a source summary page** under `wiki/pages/` if one doesn't exist. Filename based on the source: `adr-2026-04-01-switch-to-vitest.md`, `pr-142-lazy-route-loading.md`, `spec-checkout-v2.md`.
+4. **Identify every existing page the source affects.** Update each in place — add new cross-references, revise claims, flag contradictions with existing content instead of silently overwriting. A single ingest routinely touches 5–15 pages; that's normal, not excessive.
+5. **Create new entity/concept pages** for anything the source mentions that deserves its own page but doesn't have one yet.
+6. **Update `wiki/index.md`** — add the new pages, update titles if they changed, verify the category sections still make sense.
+7. **Append to `wiki/log.md`:**
+
+```
+## [YYYY-MM-DD] ingest | <source subject>
+
+- Source: <path / PR number / ADR id / URL>
+- Pages created: <list>
+- Pages updated: <list>
+- Notes: <one or two sentences on anything notable — contradictions found, questions raised, topics to revisit>
+```
+
+#### Query
+
+When the user asks a question the wiki should help answer:
+
+1. **Read `wiki/index.md` first.** Use it as a map to find relevant pages. This is much faster than reading `pages/` indiscriminately.
+2. **Read the relevant pages.** Cite them in the answer (e.g., "per `wiki/pages/overpass-caching.md`…") so the user can verify.
+3. **If the answer is novel synthesis** — a comparison, an explanation, an analysis the wiki didn't already contain — ask whether to file it as a new page. Good answers shouldn't disappear into chat history; filing them is how the wiki compounds from questions as well as ingests.
+4. **If a page was created**, append to `log.md`:
+
+```
+## [YYYY-MM-DD] query | <question topic>
+
+- Question: <one-line summary>
+- Pages referenced: <list>
+- Pages created: <list, if any>
+```
+
+If nothing was filed, a log entry is optional — judgment call.
+
+#### Lint
+
+When the user asks for a lint / health check:
+
+- **Contradictions** — pages with conflicting claims. Flag them; don't silently resolve. The user decides which is correct.
+- **Stale claims** — statements superseded by newer sources. Flag with the superseding source.
+- **Orphan pages** — pages with no inbound links. Either link them from somewhere relevant or propose deletion.
+- **Missing pages** — concepts or entities mentioned on multiple pages but lacking their own. Propose creation.
+- **Source drift** — pages whose `sources:` frontmatter references files that have been deleted or heavily rewritten. Flag for re-ingestion.
+
+Produce a triage list, not autonomous edits. The user approves before anything changes. Append to `log.md`:
+
+```
+## [YYYY-MM-DD] lint | <what was checked>
+
+- Issues found: <count>
+- Resolved inline: <list, if any>
+- Flagged for user: <list>
+```
+
+### Scope discipline
+
+- **The wiki is LLM-owned.** A human hand-editing a wiki page must log it as `manual-edit` in `log.md` so the next ingest doesn't quietly re-diverge.
+- **Sources are read-only during wiki operations.** Ingesting an ADR doesn't modify the ADR. Editing an ADR is a separate task.
+- **No fabrication.** Every claim traces back to `sources:` frontmatter. If no source supports a claim, drop it or mark it as explicit synthesis.
+- **When uncertain where a fact belongs**, surface the question to the user instead of forcing a bad filing. An incorrectly filed page is harder to fix than a deferred one.
+- **Scaffolding is not ingestion.** Setting up `wiki/` (via the `repo-wiki-scaffold` skill) creates the structure. Populating it is a separate operation the user initiates explicitly.
+
 ## What NOT to touch without asking
 
 - **`LICENSE.md`** — contains dual copyright (original AstroWind © onWidget, plus current work). Do not modify the copyright lines.
