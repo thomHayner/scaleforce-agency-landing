@@ -110,3 +110,11 @@ workflow going forward.
   decision; the rest of the CI hardening ADR (job split, ESLint
   env.d.ts override, Dependabot for `github-actions`, prettier
   removal) still stands.
+- The Context block's YAML snippet pins `actions/setup-node@v4`
+  and `actions/cache@v4` because that's the state of the
+  workflow *when this ADR was written*, which is what the ADR
+  is reasoning about. The current workflow reflects this
+  decision: `actions/setup-node@v6` with `cache: npm` and no
+  explicit `actions/cache` step for `~/.npm`. Don't take the
+  snapshot as a mandate to pin those versions — it's history,
+  not instruction.

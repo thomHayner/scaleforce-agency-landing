@@ -105,14 +105,18 @@ untouched — those are their own later phases.
   contributors get a clear Node major-line signal from `.nvmrc`
   — it contains the bare major (`24`), which `nvm` and `fnm`
   resolve to the installer's latest 24.x. (Volta doesn't read
-  `.nvmrc` by default — contributors on Volta should use
-  `volta pin node@24` or set a `volta.node` field if we later
-  want to emit one.) That is intentional: we want contributors
-  tracking the LTS line, not an exact patch that would need an
-  ADR bump every time 24.x gets a security release. If future reproducibility
-  needs require byte-exact Node across machines, pin to a full
-  `24.x.y` then (and accept the maintenance cost of chasing
-  patch releases). TS diagnostics are current and we're set up
+  `.nvmrc` by default; contributors on Volta should select
+  Node 24 in their user-level Volta setup — e.g.
+  `volta install node@24` — rather than `volta pin node@24`,
+  which would write a `volta.node` pin into `package.json` and
+  defeat the major-line intent. If we ever decide to publish a
+  repo-level `volta.node`, that's a separate ADR.) That is
+  intentional: we want contributors tracking the LTS line, not
+  an exact patch that would need an ADR bump every time 24.x
+  gets a security release. If future reproducibility
+  requirements demand byte-exact Node across machines, pin to
+  a full `24.x.y` then (and accept the maintenance cost of
+  chasing patch releases). TS diagnostics are current and we're set up
   for a clean TS 6 move when that phase comes.
 - **Negative:** Contributors on a dev machine with Node older than
   22 will see an `EBADENGINE` warning from npm. That's the
