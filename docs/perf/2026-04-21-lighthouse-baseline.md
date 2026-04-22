@@ -87,7 +87,7 @@ Estimated ms savings are from the simulated mobile run, not guaranteed real-worl
 - Reduce unused JavaScript (~600 ms)
 - Properly size images (~380 ms, ~268 KiB)
 - Preconnect to required origins (~322 ms)
-- Eliminate render-blocking resources (~302 ms, ~300 ms savings)
+- Eliminate render-blocking resources (~302 ms)
 - Unused CSS rules: est savings 10 KiB
 
 **`blogpost`**
@@ -121,9 +121,9 @@ Estimated ms savings are from the simulated mobile run, not guaranteed real-worl
    text element in every case, the root cause is render-blocking resources and third-party JS delaying first
    paint, not image weight.
 2. **Unused JavaScript is the single biggest lever** (~123 KiB shared, up to ~1 s of savings on `blogpost`).
-   Likely suspects: the react-calendly bundle pulled in globally, any AstroWind helper JS still shipping.
-   An audit of what's in `dist/_astro/*.js` after build, plus tighter `client:*` directives, should chip a
-   lot of this away.
+   Verify whether `react-calendly` is being included in the client bundle, along with any AstroWind helper
+   JS still shipping. An audit of what's in `dist/_astro/*.js` after build, plus tighter `client:*`
+   directives, should chip a lot of this away.
 3. **Render-blocking resources** (~300 ms on `blog` and `privacy`). A `<link rel="preload">` strategy for
    the critical fonts + inlining critical CSS would help. Also: verify `@tailwindcss/vite` isn't emitting a
    larger-than-needed global CSS bundle.

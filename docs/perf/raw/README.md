@@ -14,7 +14,7 @@ note that compressed artifacts may still appear as binary or noisy in Git diffs 
 
 ## Viewing a report
 
-Decompress and open in Lighthouse's HTML viewer, or re-generate the HTML:
+Decompress and open in Lighthouse's HTML viewer:
 
 ```bash
 gunzip -c home.report.json.gz > home.report.json
