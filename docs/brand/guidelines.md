@@ -58,27 +58,17 @@ block in [`src/assets/styles/tailwind.css`](../../src/assets/styles/tailwind.css
 
 ## Logo
 
-Single crisp chip mark — a blue globe / network icon — used across the
-site, favicon, and OG image.
+Wave 3 left the existing logo and favicon untouched. Both are the
+originals that shipped on `main`:
 
-- **Component**: [`src/components/Logo.astro`](../../src/components/Logo.astro) — renders
-  [`src/assets/favicons/apple-touch-icon.png`](../../src/assets/favicons/apple-touch-icon.png) via Astro's
-  `<Image>` with `densities={[2, 3]}`. Rendered at 32×32 in the header.
-- **Favicon**: [`src/assets/favicons/favicon.svg`](../../src/assets/favicons/favicon.svg) + `favicon.ico`
-  are the originals — deliberately left untouched because the SVG is a
-  coarse potrace of the mark and doesn't scale above ~32px cleanly.
-- **Mask icon** (Safari pinned tab): color hint set to `--aw-color-primary`
-  (`#4F7CFF`) in [`src/components/Favicons.astro`](../../src/components/Favicons.astro). This
-  only tints the monochrome silhouette in Safari's pinned-tab UI; it
-  doesn't change the regular favicon.
+- **Header logo**: [`src/components/Logo.astro`](../../src/components/Logo.astro) renders
+  [`src/assets/images/logo.png`](../../src/assets/images/logo.png) via Astro's `<Image>`.
+- **Favicon** + **Apple touch icon** + **mask icon**: original files under
+  [`src/assets/favicons/`](../../src/assets/favicons/), wired through
+  [`src/components/Favicons.astro`](../../src/components/Favicons.astro).
 
-### Known gap: no clean vector source
-
-The `apple-touch-icon.png` (180×180) is the authoritative crisp copy. The
-inline SVG favicon is a low-fidelity trace and isn't suitable for the
-header logo or OG image. Tracked as a Wave 4+ follow-up: produce a
-true-vector source so the logo composes crisply at any size and supports
-`currentColor` dark/light variants.
+A proper vector source + brand-aligned logo pass is tracked as a
+Wave 4+ follow-up (see [TODO.md](../../TODO.md)).
 
 ## OG / social images
 

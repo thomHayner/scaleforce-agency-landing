@@ -1,7 +1,9 @@
 ---
+// import Image from '~/components/common/Image.astro';
+// TODO: check this against best practices
 import { Image } from 'astro:assets';
-import logo from '~/assets/favicons/apple-touch-icon.png';
-import { SITE } from 'site:config';
+import logo from '../assets/images/logo.png';
+import { SITE } from 'astrowind:config';
 ---
 
 <span
@@ -9,10 +11,9 @@ import { SITE } from 'site:config';
 >
   <Image
     src={logo}
-    alt="ScaleForce Logo"
-    width={32}
-    height={32}
-    densities={[2, 3]}
+    alt="Scale Force Logo"
+    width={logo.width / 5}
+    densities={[1.5, 2]}
     class="mx-2"
     loading="eager"
   />
