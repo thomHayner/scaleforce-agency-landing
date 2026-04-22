@@ -19,6 +19,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const FONT_CACHE = resolve(__dirname, '.fonts-cache');
 const OUT = resolve(ROOT, 'src/assets/images/default.png');
+const LOGO_SRC = resolve(ROOT, 'src/assets/favicons/apple-touch-icon.png');
 
 // Brand tokens — keep in sync with src/components/CustomStyles.astro.
 const BG = '#0A0F1F';
@@ -54,24 +55,12 @@ async function ensureFont({ file, url }) {
   return readFile(path);
 }
 
-// The chip mark, lifted from src/assets/favicons/favicon.svg.
-// Kept inline so the OG image has no external asset dependencies.
-const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="200" height="200">
-  <g transform="translate(0,32) scale(0.1,-0.1)" fill="${PRIMARY}" stroke="none">
-    <path d="M83 280 c-87 -52 -83 -198 6 -245 38 -19 104 -19 142 0 89 47 93 193 6 245 -42 26 -112 26 -154 0z m144 -20 c34 -20 59 -57 47 -68 -4 -4 -9 -1 -11 5 -7 20 -41 59 -46 53 -2 -3 -8 -15 -11 -27 -6 -19 -3 -23 13 -23 12 0 21 -4 21 -10 0 -5 9 -10 20 -10 16 0 20 -7 20 -36 0 -28 -8 -44 -34 -70 -29 -29 -41 -34 -80 -34 -53 0 -90 20 -112 61 -17 33 -17 39 -4 39 6 0 10 -7 10 -16 0 -14 3 -14 15 -4 8 7 15 21 15 31 0 11 7 19 16 19 14 0 14 2 0 15 -22 23 -43 18 -54 -12 -10 -26 -10 -26 -11 -5 -3 87 106 141 186 92z" />
-    <path d="M142 248 c4 -28 45 -38 55 -13 7 19 -12 35 -40 35 -13 0 -18 -6 -15 -22z" />
-    <path d="M96 245 c-22 -17 -17 -29 8 -19 9 3 16 12 16 20 0 17 0 17 -24 -1z" />
-    <path d="M120 210 c0 -5 5 -10 10 -10 6 0 10 5 10 10 0 6 -4 10 -10 10 -5 0 -10 -4 -10 -10z" />
-    <path d="M137 169 c-15 -17 -27 -32 -27 -33 0 -2 13 -1 30 2 23 3 30 0 30 -12 0 -19 11 -21 27 -5 7 7 8 18 3 28 -5 9 -11 24 -14 34 -8 24 -18 21 -49 -14z" />
-    <path d="M205 179 c-10 -15 3 -25 16 -12 7 7 7 13 1 17 -6 3 -14 1 -17 -5z" />
-    <path d="M233 153 c-17 -6 -16 -38 0 -52 11 -8 16 -5 25 15 20 42 12 53 -25 37z" />
-    <path d="M93 113 c-22 -8 -14 -32 17 -48 35 -18 60 -19 95 -3 48 22 22 41 -33 24 -29 -9 -36 -7 -50 11 -10 11 -23 19 -29 16z" />
-    <path d="M140 110 c0 -5 5 -10 10 -10 6 0 10 5 10 10 0 6 -4 10 -10 10 -5 0 -10 -4 -10 -10z" />
-  </g>
-</svg>`;
-const LOGO_DATA_URL = `data:image/svg+xml;utf8,${encodeURIComponent(LOGO_SVG)}`;
+async function loadLogoDataUrl() {
+  const png = await readFile(LOGO_SRC);
+  return `data:image/png;base64,${png.toString('base64')}`;
+}
 
-function template() {
+function template(logoDataUrl) {
   return {
     type: 'div',
     props: {
@@ -91,7 +80,7 @@ function template() {
           props: {
             style: { display: 'flex', alignItems: 'center', gap: '28px' },
             children: [
-              { type: 'img', props: { src: LOGO_DATA_URL, width: 120, height: 120 } },
+              { type: 'img', props: { src: logoDataUrl, width: 120, height: 120 } },
               {
                 type: 'div',
                 props: {
@@ -158,9 +147,13 @@ function template() {
 }
 
 async function main() {
-  const [spaceGrotesk, interTight] = await Promise.all(FONTS.map(ensureFont));
+  const [spaceGrotesk, interTight, logoDataUrl] = await Promise.all([
+    ensureFont(FONTS[0]),
+    ensureFont(FONTS[1]),
+    loadLogoDataUrl(),
+  ]);
 
-  const svg = await satori(template(), {
+  const svg = await satori(template(logoDataUrl), {
     width: 1200,
     height: 630,
     fonts: [

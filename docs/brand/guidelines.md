@@ -58,19 +58,27 @@ block in [`src/assets/styles/tailwind.css`](../../src/assets/styles/tailwind.css
 
 ## Logo
 
-Single source of truth — the chip mark that doubles as the favicon. Same
-design across the site, favicon, and OG image.
+Single crisp chip mark — a blue globe / network icon — used across the
+site, favicon, and OG image.
 
-- **Component**: [`src/components/Logo.astro`](../../src/components/Logo.astro) — inline SVG
-  using `fill="currentColor"`. Paints whatever the ancestor text color is, so
-  it follows light/dark automatically (cobalt via `text-primary` by default).
-- **Favicon**: [`src/assets/favicons/favicon.svg`](../../src/assets/favicons/favicon.svg) — same paths, uses a
-  `<style>` block with `prefers-color-scheme` so it tints itself without JS.
-- **Mask icon** (Safari pinned tab): set to `--aw-color-primary` (`#4F7CFF`)
-  in [`src/components/Favicons.astro`](../../src/components/Favicons.astro).
+- **Component**: [`src/components/Logo.astro`](../../src/components/Logo.astro) — renders
+  [`src/assets/favicons/apple-touch-icon.png`](../../src/assets/favicons/apple-touch-icon.png) via Astro's
+  `<Image>` with `densities={[2, 3]}`. Rendered at 32×32 in the header.
+- **Favicon**: [`src/assets/favicons/favicon.svg`](../../src/assets/favicons/favicon.svg) + `favicon.ico`
+  are the originals — deliberately left untouched because the SVG is a
+  coarse potrace of the mark and doesn't scale above ~32px cleanly.
+- **Mask icon** (Safari pinned tab): color hint set to `--aw-color-primary`
+  (`#4F7CFF`) in [`src/components/Favicons.astro`](../../src/components/Favicons.astro). This
+  only tints the monochrome silhouette in Safari's pinned-tab UI; it
+  doesn't change the regular favicon.
 
-Since the mark is `currentColor`, it composes cleanly on any surface — no
-more "don't place the logo here" caveats.
+### Known gap: no clean vector source
+
+The `apple-touch-icon.png` (180×180) is the authoritative crisp copy. The
+inline SVG favicon is a low-fidelity trace and isn't suitable for the
+header logo or OG image. Tracked as a Wave 4+ follow-up: produce a
+true-vector source so the logo composes crisply at any size and supports
+`currentColor` dark/light variants.
 
 ## OG / social images
 
