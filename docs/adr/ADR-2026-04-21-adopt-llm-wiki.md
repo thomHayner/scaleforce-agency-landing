@@ -30,7 +30,7 @@ Adopt the Karpathy LLM-Wiki pattern under `wiki/`. `docs/`, `docs/adr/`, and git
 
 - **Positive:** compounding knowledge base; synthesis persists across sessions; wiki pages can be cited and audited; cross-reference maintenance is LLM work, not human work.
 - **Negative:** requires discipline to keep `wiki/` LLM-owned (hand-edits must be logged); initial ingest cost for existing sources; the schema in `CLAUDE.md` adds upfront instruction weight.
-- **Follow-ups:** first ingest pass over existing ADRs, recent PRs, and docs; consider local search tooling (e.g., qmd) once page count grows past what the index can scan comfortably. Also: this repo does not yet have a `CLAUDE.md` — without the "LLM-Wiki" schema section, future sessions won't know how to operate on the wiki. Adding `CLAUDE.md` is a prerequisite for the pattern to work in practice.
+- **Follow-ups:** first ingest pass over existing ADRs, recent PRs, and docs; consider local search tooling (e.g., qmd) once page count grows past what the index can scan comfortably. `CLAUDE.md` was created as part of this scaffold with the LLM-Wiki schema section only — project-wide conventions (branching, commits, testing) should be added there over time.
 
 ## Notes
 
