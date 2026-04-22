@@ -7,7 +7,7 @@ deciders: [thomHayner, claude-opus-4-7]
 tags: [ci, lint, dx]
 supersedes: []
 superseded_by: []
-related: [ADR-2026-04-21-adopt-feature-dev-main-branching]
+related: [ADR-2026-04-21-adopt-feature-dev-main-branching, ADR-2026-04-21-drop-redundant-npm-cache]
 source: claude-code-session-2026-04-21-ci-hardening
 ---
 
@@ -26,7 +26,7 @@ Five linked changes, all scoped to CI/tooling and not touching application code:
 
 1. **Split the `check` job** in `.github/workflows/actions.yaml` into parallel jobs — `typecheck` (runs `check:astro`) and `lint` (runs `check:eslint`) — each on Node 22. The `build` matrix job (Node 20 + 22) stays as-is.
 2. **Override `@typescript-eslint/triple-slash-reference` for `src/env.d.ts` only** via a per-file ESLint config block, and revert the file's contents to the triple-slash form that `astro sync` produces. All other ESLint rules still apply to the file.
-3. **Add an explicit `actions/cache@v4` step** in every job, keyed on `package-lock.json`, supplementing `setup-node`'s built-in cache.
+3. **Add an explicit `actions/cache@v4` step** in every job, keyed on `package-lock.json`, supplementing `setup-node`'s built-in cache. *(Superseded 2026-04-21 by ADR-2026-04-21-drop-redundant-npm-cache — the belt-and-suspenders redundancy proved not to pay off; the explicit step was removed.)*
 4. **Enable Dependabot for the `github-actions` ecosystem** via `.github/dependabot.yml`, weekly, labeled `dependencies` + `ci`.
 5. **Remove prettier from the toolchain entirely** — dropped from CI (`format` job removed), removed from `package.json` devDependencies and scripts, and config files deleted. The project doesn't use prettier in practice (inherited from AstroWind template) and 30 files of accumulated formatting drift confirms nobody runs it locally.
 
@@ -35,7 +35,7 @@ Five linked changes, all scoped to CI/tooling and not touching application code:
 - **Ignore `src/env.d.ts` entirely in `eslint.config.js`** — rejected because the user explicitly wanted the file still linted for every other rule. The prior attempt (commit 73e8867) took this route and was immediately reverted.
 - **Change `src/env.d.ts` to `import type {} from 'astro/client'`** (the form on `dev` today, from commit 0f062ae) — rejected because `astro sync` regenerates the file on every `astro check` run with the triple-slash directive, clobbering the edit and putting the working tree out of sync with what CI sees.
 - **Keep the monolithic `check` job** — rejected because fail-fast masking means a single broken PR can take 3 CI runs to fully diagnose (fix typecheck → see lint failure → fix lint → see format failure).
-- **Skip the explicit cache action** — rejected for minimal complexity cost; `setup-node`'s cache is sometimes invalidated unexpectedly and the belt-and-suspenders pair measurably improves cold installs.
+- **Skip the explicit cache action** — rejected at the time for minimal complexity cost; `setup-node`'s cache was believed to be sometimes invalidated unexpectedly and the belt-and-suspenders pair was expected to improve cold installs. *(Revisited 2026-04-21 in ADR-2026-04-21-drop-redundant-npm-cache: the expected improvement didn't materialize — both layers cached the same path with the same key, so a miss in one was effectively a miss in the other. The explicit step was removed; this alternative is now the chosen path.)*
 - **Auto-format all 30 drift files then keep enforcing prettier** — rejected because the team doesn't use prettier in practice, so enforcement creates PR friction without stylistic benefit. A future ADR may evaluate Biome as a faster combined lint+format replacement.
 
 ## Consequences
