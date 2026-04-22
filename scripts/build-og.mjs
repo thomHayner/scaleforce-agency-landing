@@ -6,25 +6,25 @@
  * there's no runtime token source this script can read). Runs via
  * `npm run build:og` (and the `prebuild` npm hook).
  *
- * Fonts are fetched from Google Fonts on cache miss and stored under
- * scripts/.fonts-cache/ (gitignored). Builds require network access when
- * that cache is absent — including CI and Vercel, since the workflow
- * doesn't currently cache scripts/.fonts-cache separately.
- *
- * Eliminating the build-time network fetch (load TTFs from an npm-shipped
- * package, or add explicit CI caching) is tracked as a follow-up.
+ * Fonts are loaded from the `@fontsource/*` npm packages in devDependencies
+ * (Space Grotesk 700, Inter Tight 500 — both latin WOFF). No network is
+ * touched at build time. Satori accepts WOFF directly; WOFF2 is not
+ * supported by Satori, which is why we resolve the `.woff` file rather
+ * than `.woff2`.
  */
-import { mkdir, readFile, writeFile, access } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const FONT_CACHE = resolve(__dirname, '.fonts-cache');
 const OUT = resolve(ROOT, 'src/assets/images/default.png');
 const LOGO_SRC = resolve(ROOT, 'src/assets/favicons/apple-touch-icon.png');
+
+const require = createRequire(import.meta.url);
 
 // Brand tokens — keep in sync with src/components/CustomStyles.astro.
 const BG = '#0A0F1F';
@@ -35,31 +35,29 @@ const MUTED = 'rgba(226, 232, 243, 0.66)';
 const FONTS = [
   {
     name: 'Space Grotesk',
-    file: 'space-grotesk-700.ttf',
-    url: 'https://fonts.gstatic.com/s/spacegrotesk/v22/V8mQoQDjQSkFtoMM3T6r8E7mF71Q-gOoraIAEj4PVksj.ttf',
+    pkg: '@fontsource/space-grotesk',
+    specifier: '@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff',
     weight: 700,
   },
   {
     name: 'Inter Tight',
-    file: 'inter-tight-500.ttf',
-    url: 'https://fonts.gstatic.com/s/intertight/v9/NGSnv5HMAFg6IuGlBNMjxJEL2VmU3NS7Z2mjPQ-qXA.ttf',
+    pkg: '@fontsource/inter-tight',
+    specifier: '@fontsource/inter-tight/files/inter-tight-latin-500-normal.woff',
     weight: 500,
   },
 ];
 
-async function ensureFont({ file, url }) {
-  const path = resolve(FONT_CACHE, file);
+function resolveFontPath(font) {
   try {
-    await access(path);
-  } catch {
-    await mkdir(FONT_CACHE, { recursive: true });
-    const res = await fetch(url);
-    if (!res.ok) {
-      throw new Error(`Failed to fetch font ${file} from ${url}: ${res.status} ${res.statusText}`);
-    }
-    await writeFile(path, Buffer.from(await res.arrayBuffer()));
+    return require.resolve(font.specifier);
+  } catch (err) {
+    throw new Error(
+      `Failed to resolve font file "${font.specifier}" for ${font.name}. ` +
+        `Ensure "${font.pkg}" is installed as a devDependency (run "npm ci") ` +
+        `and that the expected .woff filename has not changed in an upstream release. ` +
+        `Underlying error: ${err.message}`
+    );
   }
-  return readFile(path);
 }
 
 async function loadLogoDataUrl() {
@@ -154,8 +152,9 @@ function template(logoDataUrl) {
 }
 
 async function main() {
+  const fontPaths = FONTS.map(resolveFontPath);
   const [fontData, logoDataUrl] = await Promise.all([
-    Promise.all(FONTS.map((font) => ensureFont(font))),
+    Promise.all(fontPaths.map((path) => readFile(path))),
     loadLogoDataUrl(),
   ]);
 
