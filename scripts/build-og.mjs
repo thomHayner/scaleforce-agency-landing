@@ -1,13 +1,18 @@
 /**
  * Build-time OG image generator.
  *
- * Renders src/assets/images/default.png from the brand tokens in
- * docs/brand/guidelines.md. Runs via `npm run build:og` (and `prebuild`).
+ * Renders src/assets/images/default.png using the inline brand constants
+ * below (kept in sync with src/components/CustomStyles.astro by hand —
+ * there's no runtime token source this script can read). Runs via
+ * `npm run build:og` (and the `prebuild` npm hook).
  *
- * Fonts are fetched from Google Fonts once and cached under
- * scripts/.fonts-cache/ — that dir is gitignored. No runtime network in CI
- * after the first build on a fresh clone (CI cache picks it up via
- * node_modules-adjacent persistence).
+ * Fonts are fetched from Google Fonts on cache miss and stored under
+ * scripts/.fonts-cache/ (gitignored). Builds require network access when
+ * that cache is absent — including CI and Vercel, since the workflow
+ * doesn't currently cache scripts/.fonts-cache separately.
+ *
+ * Eliminating the build-time network fetch (load TTFs from an npm-shipped
+ * package, or add explicit CI caching) is tracked as a follow-up.
  */
 import { mkdir, readFile, writeFile, access } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
