@@ -1,8 +1,10 @@
 # Brand guidelines
 
 Phase 7 · Wave 2 — initial tokens. Scope is deliberately narrow: colors,
-typography, and usage notes for the existing wordmark. Logo mark, favicon,
-and OG imagery remain as-is for now (tracked as follow-ups in [TODO.md](../../TODO.md)).
+typography, and usage notes for the existing wordmark. Logo mark and
+favicon remain as-is for now (tracked as follow-ups in [TODO.md](../../TODO.md));
+the default OG image is regenerated at build time using these tokens — see
+[OG / social images](#og--social-images) below.
 
 ## Palette
 
