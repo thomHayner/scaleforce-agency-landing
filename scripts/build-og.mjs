@@ -152,19 +152,20 @@ function template(logoDataUrl) {
 }
 
 async function main() {
-  const [spaceGrotesk, interTight, logoDataUrl] = await Promise.all([
-    ensureFont(FONTS[0]),
-    ensureFont(FONTS[1]),
+  const [fontData, logoDataUrl] = await Promise.all([
+    Promise.all(FONTS.map((font) => ensureFont(font))),
     loadLogoDataUrl(),
   ]);
 
   const svg = await satori(template(logoDataUrl), {
     width: 1200,
     height: 630,
-    fonts: [
-      { name: 'Space Grotesk', data: spaceGrotesk, weight: 700, style: 'normal' },
-      { name: 'Inter Tight', data: interTight, weight: 500, style: 'normal' },
-    ],
+    fonts: FONTS.map((font, index) => ({
+      name: font.name,
+      data: fontData[index],
+      weight: font.weight,
+      style: 'normal',
+    })),
   });
 
   const png = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } }).render().asPng();
