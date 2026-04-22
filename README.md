@@ -24,8 +24,13 @@ The build pulls content from external sources and will fail without these set (s
 | `CONTENTFUL_PREVIEW_TOKEN` | Contentful Preview API token (draft content in preview mode). |
 | `AIRTABLE_API_KEY` | Airtable API key (legacy integration; see `src/lib/astro-airtable/`). |
 | `AIRTABLE_BASE_ID` | Airtable base id used by the legacy integration. |
+| `RESEND_API_KEY` | Resend API key used by the contact-form serverless function (`api/contact.ts`). |
+| `CONTACT_TO_EMAIL` | Destination inbox for contact-form submissions. |
+| `CONTACT_FROM_EMAIL` | Verified Resend sender used as the `From:` address on contact-form mail. |
 
 The Airtable integration is not currently wired into the default build but the env vars are still referenced by the legacy code in the repo.
+
+See [`.env.example`](.env.example) for a template.
 
 ## Scripts
 
