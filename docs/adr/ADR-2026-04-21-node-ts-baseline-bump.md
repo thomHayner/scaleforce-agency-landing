@@ -102,9 +102,16 @@ untouched — those are their own later phases.
 
 - **Positive:** The `engines` field, the CI matrix, `.nvmrc`, and
   production runtimes (Vercel's 24 default) all agree. New
-  contributors get a deterministic Node signal from `.nvmrc`. TS
-  diagnostics are current and we're set up for a clean TS 6 move
-  when that phase comes.
+  contributors get a clear Node major-line signal from `.nvmrc`
+  — it contains the bare major (`24`), which every `nvm`/`fnm`/
+  `volta`-compatible tool resolves to the installer's latest
+  24.x. That is intentional: we want contributors tracking the
+  LTS line, not an exact patch that would need an ADR bump every
+  time 24.x gets a security release. If future reproducibility
+  needs require byte-exact Node across machines, pin to a full
+  `24.x.y` then (and accept the maintenance cost of chasing
+  patch releases). TS diagnostics are current and we're set up
+  for a clean TS 6 move when that phase comes.
 - **Negative:** Contributors on a dev machine with Node older than
   22 will see an `EBADENGINE` warning from npm. That's the
   intended signal — Nodes 18 and 20 are past active LTS — but it

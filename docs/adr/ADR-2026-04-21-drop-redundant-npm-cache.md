@@ -95,9 +95,18 @@ workflow going forward.
   (`actions/setup-node` 4 → 6), [PR #47](https://github.com/thomHayner/scaleforce-agency-landing/pull/47)
   (`actions/checkout` 4 → 6). Copilot's review on #45 is what
   surfaced the redundancy.
-- The explicit block was introduced during the original CI
-  hardening pass (see
-  ADR-2026-04-21-ci-hardening-split-and-eslint-env-override)
-  before we adopted `setup-node`'s built-in caching; at that
-  point the two mechanisms coexisted by accident rather than
-  design.
+- The explicit block was introduced deliberately during the
+  original CI hardening pass (see
+  ADR-2026-04-21-ci-hardening-split-and-eslint-env-override,
+  Decision #3), which added it as a belt-and-suspenders
+  supplement to `setup-node`'s built-in cache on the theory that
+  `setup-node`'s cache was "sometimes invalidated unexpectedly".
+  In practice that redundancy has not paid off — both layers
+  cache the same `~/.npm` path with functionally identical
+  lockfile-hashed keys, so a miss in one is effectively a miss
+  in the other, and the double-save warnings cost more reader
+  attention than the extra layer ever saved in install time.
+  This ADR therefore supersedes that part of the earlier
+  decision; the rest of the CI hardening ADR (job split, ESLint
+  env.d.ts override, Dependabot for `github-actions`, prettier
+  removal) still stands.
