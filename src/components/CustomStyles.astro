@@ -1,63 +1,56 @@
 ---
-import '@fontsource-variable/inter';
-
-// 'DM Sans'
-// Nunito
-// Dosis
-// Outfit
-// Roboto
-// Literata
-// 'IBM Plex Sans'
-// Karla
-// Poppins
-// 'Fira Sans'
-// 'Libre Franklin'
-// Inconsolata
-// Raleway
-// Oswald
-// 'Space Grotesk'
-// Urbanist
+import '@fontsource-variable/inter-tight';
+import '@fontsource-variable/space-grotesk';
 ---
 
 <style is:inline>
   :root {
-    --aw-font-sans: 'Inter Variable';
-    --aw-font-serif: 'Inter Variable';
-    --aw-font-heading: 'Inter Variable';
+    /* Typography
+     * Body: Inter Tight — tighter, slightly quieter cousin of Inter.
+     * Headings: Space Grotesk — geometric sans with character, distinctive
+     * without being niche. Both load as variable fonts via @fontsource. */
+    --aw-font-sans: 'Inter Tight Variable';
+    --aw-font-serif: 'Inter Tight Variable';
+    --aw-font-heading: 'Space Grotesk Variable';
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+    /* Brand palette — cobalt-leaning blues, intentionally off the
+     * Tailwind-default blue-500 path to feel familiar but not generic.
+     * See docs/brand/guidelines.md for usage. */
+    --aw-color-primary: rgb(79 124 255); /* #4F7CFF cobalt */
+    --aw-color-secondary: rgb(53 88 212); /* #3558D4 deep cobalt */
+    --aw-color-accent: rgb(56 189 248); /* #38BDF8 sky — highlights */
 
-    --aw-color-text-heading: rgb(0 0 0);
-    --aw-color-text-default: rgb(16 16 16);
-    --aw-color-text-muted: rgb(16 16 16 / 66%);
-    --aw-color-bg-page: rgb(255 255 255);
+    --aw-color-text-heading: rgb(13 20 40);
+    --aw-color-text-default: rgb(30 41 59);
+    --aw-color-text-muted: rgb(30 41 59 / 66%);
+    --aw-color-bg-page: rgb(250 251 253);
 
-    --aw-color-bg-page-dark: rgb(3 6 32);
+    --aw-color-bg-page-dark: rgb(10 15 31); /* #0A0F1F near-black, blue undertone */
 
     ::selection {
-      background-color: lavender;
+      background-color: rgb(79 124 255 / 25%);
     }
   }
 
   .dark {
-    --aw-font-sans: 'Inter Variable';
-    --aw-font-serif: 'Inter Variable';
-    --aw-font-heading: 'Inter Variable';
+    --aw-font-sans: 'Inter Tight Variable';
+    --aw-font-serif: 'Inter Tight Variable';
+    --aw-font-heading: 'Space Grotesk Variable';
 
-    --aw-color-primary: rgb(1 97 239);
-    --aw-color-secondary: rgb(1 84 207);
-    --aw-color-accent: rgb(109 40 217);
+    /* Primary brightens slightly in dark mode for better contrast on the
+     * near-black surface; secondary keeps the deeper hover state. */
+    --aw-color-primary: rgb(108 148 255); /* #6C94FF lifted cobalt */
+    --aw-color-secondary: rgb(79 124 255); /* #4F7CFF base cobalt */
+    --aw-color-accent: rgb(56 189 248); /* #38BDF8 */
 
-    --aw-color-text-heading: rgb(247, 248, 248);
-    --aw-color-text-default: rgb(229 236 246);
-    --aw-color-text-muted: rgb(229 236 246 / 66%);
-    --aw-color-bg-page: rgb(3 6 32);
+    --aw-color-text-heading: rgb(241 245 252);
+    --aw-color-text-default: rgb(226 232 243);
+    --aw-color-text-muted: rgb(226 232 243 / 66%);
+    --aw-color-bg-page: rgb(10 15 31);
 
     ::selection {
-      background-color: black;
-      color: snow;
+      background-color: rgb(108 148 255 / 35%);
+      color: rgb(241 245 252);
     }
   }
 </style>
