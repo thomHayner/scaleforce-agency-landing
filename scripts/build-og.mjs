@@ -54,7 +54,9 @@ async function ensureFont({ file, url }) {
   } catch {
     await mkdir(FONT_CACHE, { recursive: true });
     const res = await fetch(url);
-    if (!res.ok) throw new Error(`Failed to fetch ${url}: ${res.status}`);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch font ${file} from ${url}: ${res.status} ${res.statusText}`);
+    }
     await writeFile(path, Buffer.from(await res.arrayBuffer()));
   }
   return readFile(path);
