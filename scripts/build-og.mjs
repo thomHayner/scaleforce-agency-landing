@@ -35,15 +35,30 @@ const MUTED = 'rgba(226, 232, 243, 0.66)';
 const FONTS = [
   {
     name: 'Space Grotesk',
-    path: require.resolve('@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff'),
+    pkg: '@fontsource/space-grotesk',
+    specifier: '@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff',
     weight: 700,
   },
   {
     name: 'Inter Tight',
-    path: require.resolve('@fontsource/inter-tight/files/inter-tight-latin-500-normal.woff'),
+    pkg: '@fontsource/inter-tight',
+    specifier: '@fontsource/inter-tight/files/inter-tight-latin-500-normal.woff',
     weight: 500,
   },
 ];
+
+function resolveFontPath(font) {
+  try {
+    return require.resolve(font.specifier);
+  } catch (err) {
+    throw new Error(
+      `Failed to resolve font file "${font.specifier}" for ${font.name}. ` +
+        `Ensure "${font.pkg}" is installed as a devDependency (run "npm ci") ` +
+        `and that the expected .woff filename has not changed in an upstream release. ` +
+        `Underlying error: ${err.message}`
+    );
+  }
+}
 
 async function loadLogoDataUrl() {
   const png = await readFile(LOGO_SRC);
@@ -137,8 +152,9 @@ function template(logoDataUrl) {
 }
 
 async function main() {
+  const fontPaths = FONTS.map(resolveFontPath);
   const [fontData, logoDataUrl] = await Promise.all([
-    Promise.all(FONTS.map((font) => readFile(font.path))),
+    Promise.all(fontPaths.map((path) => readFile(path))),
     loadLogoDataUrl(),
   ]);
 
