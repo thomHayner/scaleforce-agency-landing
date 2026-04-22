@@ -5,8 +5,8 @@ import Button from '~/components/ui/Button.astro';
 const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } = Astro.props;
 ---
 
-<!-- Submission handler not yet wired (Phase 7 Wave 2). Form renders inert. -->
-<form>
+<!-- Submission handler not yet wired (Phase 7 Wave 2). Form is intentionally non-submitting: onsubmit preventDefault + disabled button. -->
+<form onsubmit="event?.preventDefault(); return false;">
   {
     inputs &&
       inputs.map(
@@ -71,8 +71,8 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
   {
     button && (
       <div class="mt-10 grid">
-        <Button variant="primary" type="submit">
-          {button}
+        <Button variant="primary" type="button" disabled aria-disabled="true" aria-label="Form not yet wired (placeholder)">
+          {button} (form not yet wired)
         </Button>
       </div>
     )
