@@ -24,7 +24,7 @@ Four representative routes were audited, chosen to cover the main page templates
 | `blogpost` | https://scaleforce.agency/ai-appointment-setters-for-real-estate-agents | `src/pages/[...blog]/[...page].astro` (single post) |
 | `privacy` | https://scaleforce.agency/privacy | `src/pages/privacy.md` (long-form markdown) |
 
-Raw Lighthouse outputs (JSON + HTML) for each route are committed under
+Raw Lighthouse JSON outputs for each route are committed under
 [`docs/perf/raw/`](./raw/). They contain the full audit detail if you need to drill in.
 
 ---

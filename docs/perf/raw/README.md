@@ -1,8 +1,9 @@
 # Raw Lighthouse reports — 2026-04-21 baseline
 
 These are the raw Lighthouse 12.8.2 JSON outputs from the pre-Phase-7 baseline run captured on 2026-04-21.
-Stored gzipped to keep the diff small; the `.json.gz` files are the exact `--output=json` outputs from
-`npx lighthouse`.
+The reports are committed as gzip-compressed copies of the `--output=json` output from `npx lighthouse`
+to reduce repository size. After decompression, each `.json.gz` file matches the original JSON output;
+note that compressed artifacts may still appear as binary or noisy in Git diffs unless configured separately.
 
 | File | Route | Size (gz) |
 | --- | --- | ---: |
@@ -16,7 +17,7 @@ Stored gzipped to keep the diff small; the `.json.gz` files are the exact `--out
 Decompress and open in Lighthouse's HTML viewer, or re-generate the HTML:
 
 ```bash
-gunzip -k home.report.json.gz
+gunzip -c home.report.json.gz > home.report.json
 # Then drop home.report.json into https://googlechrome.github.io/lighthouse/viewer/
 ```
 
