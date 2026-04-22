@@ -6,7 +6,7 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
 ---
 
 <!-- Submission handler not yet wired (Phase 7 Wave 2). Form is intentionally non-submitting: onsubmit preventDefault + disabled button. -->
-<form onsubmit="event?.preventDefault(); return false;">
+<form onsubmit="event.preventDefault(); return false;">
   {
     inputs &&
       inputs.map(
