@@ -4,7 +4,7 @@ An LLM-maintained knowledge base for this repo, following the Karpathy LLM-Wiki 
 
 ## What this is
 
-`wiki/` is a structured, interlinked collection of markdown files that an LLM assistant (e.g., Claude Code) builds and maintains incrementally. Unlike RAG — which retrieves from raw sources on every question and rediscovers structure every time — this wiki is a **persistent, compounding artifact**. Cross-references are already there. Contradictions have already been flagged. The synthesis already reflects everything that's been ingested.
+`wiki/` is a structured, interlinked collection of markdown files that an LLM assistant (e.g., Claude Code) builds and maintains incrementally. Unlike RAG — which retrieves from raw sources on every question and rediscovers structure every time — this wiki is a **persistent, compounding artifact**. Cross-references persist across sessions. Contradictions get flagged as they surface. The synthesis reflects everything that's been ingested so far.
 
 **Humans read this folder; the LLM writes it.** You're in charge of sourcing, exploration, and asking the right questions. The LLM does the bookkeeping — summarizing, cross-referencing, filing, and keeping the wiki consistent as it grows.
 
