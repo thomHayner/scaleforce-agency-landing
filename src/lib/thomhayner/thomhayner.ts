@@ -1,10 +1,5 @@
 // Loads syndicated blog posts from https://github.com/thomHayner/thomHayner.com.
 // Filters to posts whose frontmatter opts in via `crossPostTo: ['scaleforce']`.
-//
-// TODO(author-attribution): scaleforce's Post schema currently has `author: string` only.
-// When we introduce an `author` content type (Contentful) or a static map in
-// `src/config.yaml` with name/avatar/bio/site, wire the byline + SinglePost.astro to
-// resolve `post.author` into a richer block. For now we hardcode `author: "Thom Hayner"`.
 
 import matter from 'gray-matter';
 import { remark } from 'remark';
@@ -140,7 +135,7 @@ const buildPost = async (
       image,
       category,
       tags,
-      author: 'Thom Hayner',
+      author: 'thom-hayner',
       metadata: {
         canonical,
         ...(image && fm.heroImageAlt

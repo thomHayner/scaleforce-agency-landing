@@ -7,7 +7,7 @@ category: Resources
 tags:
   - AI Assistants
   - AI Agents
-author: ScaleForce
+author: scaleforce
 ---
 
 ## Artificial Intelligence: A Brief Overview

@@ -7,7 +7,7 @@ category: Resources
 tags:
   - AI agents
   - AI assistants
-author: ScaleForce
+author: scaleforce
 ---
 
 ## Overview of AI to Reduce Employee Turnover

@@ -1,6 +1,7 @@
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import type { HTMLAttributes, ImageMetadata } from 'astro/types';
 import type { Asset, RichText } from 'contentful';
+import type { Author } from '~/lib/authors/authors';
 
 export interface FormattedContentfulPost {
   id: string,
@@ -51,8 +52,10 @@ export interface Post {
   category?: Taxonomy;
   /**  */
   tags?: Taxonomy[];
-  /**  */
+  /** Slug reference matching the Contentful `author` content type (e.g. `scaleforce`, `thom-hayner`). */
   author?: string;
+  /** Resolved author metadata, populated at normalization time from the Contentful `author` content type. */
+  authorRef?: Author;
 
   /**  */
   metadata?: MetaData;
