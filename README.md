@@ -2,8 +2,6 @@
 
 Marketing and lead-generation site for [ScaleForce.agency](https://ScaleForce.agency), an AI / automations / operations agency. Built with Astro 5 and Tailwind 4, with blog content aggregated from local markdown, Contentful, and the author's personal blog at `thomhayner.com`.
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/6827720e-01b1-4d10-a380-6e58995a83d3/deploy-status)](https://app.netlify.com/sites/scaleforce/deploys)
-
 ## Quick start
 
 ```bash
@@ -17,7 +15,7 @@ Dev server defaults to `http://localhost:4321`.
 
 ## Required environment variables
 
-The build pulls content from external sources and will fail without these set (see the deploy environment in Netlify, or a local `.env` for development):
+The build pulls content from external sources and will fail without these set (see the deploy environment in Vercel, or a local `.env` for development):
 
 | Variable | Purpose |
 | --- | --- |
@@ -50,7 +48,7 @@ The Airtable integration is not currently wired into the default build but the e
 - [React 19](https://react.dev/) — used for Calendly embeds and isolated interactive components.
 - [Node 22+](https://nodejs.org/) — required runtime for local dev and CI.
 - [Contentful](https://www.contentful.com/) — CMS for blog / case-study content.
-- [Netlify](https://www.netlify.com/) — production hosting.
+- [Vercel](https://vercel.com/) — production hosting.
 
 ## Branching workflow
 
