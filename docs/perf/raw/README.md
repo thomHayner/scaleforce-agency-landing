@@ -1,7 +1,7 @@
 # Raw Lighthouse reports — 2026-04-21 baseline
 
 These are the raw Lighthouse 12.8.2 JSON outputs from the pre-Phase-7 baseline run captured on 2026-04-21.
-The reports are committed as gzip-compressed copies of the `--output=json` output from `npx lighthouse`
+The reports are committed as gzip-compressed copies of the `--output=json` output from `npx lighthouse@12.8.2`
 to reduce repository size. After decompression, each `.json.gz` file matches the original JSON output;
 note that compressed artifacts may still appear as binary or noisy in Git diffs unless configured separately.
 

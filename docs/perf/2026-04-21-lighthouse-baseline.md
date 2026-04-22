@@ -150,10 +150,10 @@ Estimated ms savings are from the simulated mobile run, not guaranteed real-worl
 
 ```bash
 # from a machine with Chrome installed
-npx lighthouse https://scaleforce.agency/                                                  --output=json --output=html --chrome-flags="--headless=new --no-sandbox"
-npx lighthouse https://scaleforce.agency/blog                                              --output=json --output=html --chrome-flags="--headless=new --no-sandbox"
-npx lighthouse https://scaleforce.agency/ai-appointment-setters-for-real-estate-agents     --output=json --output=html --chrome-flags="--headless=new --no-sandbox"
-npx lighthouse https://scaleforce.agency/privacy                                           --output=json --output=html --chrome-flags="--headless=new --no-sandbox"
+npx lighthouse@12.8.2 https://scaleforce.agency/                                                  --output=json --output=html --chrome-flags="--headless=new --no-sandbox"
+npx lighthouse@12.8.2 https://scaleforce.agency/blog                                              --output=json --output=html --chrome-flags="--headless=new --no-sandbox"
+npx lighthouse@12.8.2 https://scaleforce.agency/ai-appointment-setters-for-real-estate-agents     --output=json --output=html --chrome-flags="--headless=new --no-sandbox"
+npx lighthouse@12.8.2 https://scaleforce.agency/privacy                                           --output=json --output=html --chrome-flags="--headless=new --no-sandbox"
 ```
 
 Single-run Lighthouse results vary by ±5 points on the Performance score even run-to-run on the same machine.
