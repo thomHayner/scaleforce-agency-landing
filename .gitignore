@@ -24,6 +24,3 @@ pnpm-lock.yaml
 
 .astro
 scaleforce-agency-landing.code-workspace
-
-# OG image generator font cache — repopulated on first build:og run.
-scripts/.fonts-cache/
