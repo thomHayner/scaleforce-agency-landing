@@ -6,7 +6,7 @@ Guide for AI coding assistants (and humans) working in this repo. Terse by desig
 
 - **What:** Marketing + lead-gen site for [ScaleForce.agency](https://ScaleForce.agency) — AI / automations / operations agency.
 - **Package:** `scaleforce-agency-landing` (private, unpublishable).
-- **Stack:** Astro 5, Tailwind 4 (CSS-first `@theme`), TypeScript 5.9 (strict), React 19 (only for `react-calendly` embeds), Node 22+. Content: local markdown + Contentful + `thomhayner.com` RSS. Hosted on Netlify.
+- **Stack:** Astro 5, Tailwind 4 (CSS-first `@theme`), TypeScript 5.9 (strict), React 19 dependencies present but not currently integrated/rendered, Node 22+. Content: local markdown + Contentful + thomhayner.com RSS. Hosted on Vercel.
 - **Branching:** `feature → dev → main`. Feature branches (`feat/...`, `fix/...`, `chore/...`, `docs/...`) cut from `dev`. PRs target `dev`; release PRs go `dev → main`. See `README.md` for the full flow.
 - **CI:** GitHub Actions, Node 22/24 matrix, runs `check:astro`, `check:eslint`, and `build`. See `.github/workflows/`.
 
@@ -34,12 +34,12 @@ Examples to model new entries on:
 
 Recent phased rework is all captured as ADRs dated `2026-04-21`. One-liners:
 
-- **Phase 1 — Node / TS baseline bump.** Raised minimum Node to 22, TS to 5.9. `ADR-...-node-ts-baseline-bump.md`.
-- **Phase 2 — Astro 4 → 5 upgrade.** `ADR-...-astro-4-to-5-upgrade.md`.
-- **Phase 3 — Tailwind 3 → 4 migration.** CSS-first `@theme` in `src/assets/styles/tailwind.css`. `ADR-...-tailwind-3-to-4-migration.md`.
-- **Phase 4 — React 18 → 19 upgrade.** `ADR-...-react-18-to-19-upgrade.md`.
-- **Phase 5 — CI hardening + multi-source blog.** Split CI, ESLint env override, third content source (`thomhayner.com`). `ADR-...-ci-hardening-split-and-eslint-env-override.md`, `ADR-...-multi-source-blog-architecture.md`.
-- **Phase 6 — Detach from AstroWind template.** Renamed package, rewrote README, adopted ADR structure. `ADR-...-detach-from-astrowind-template.md`.
+- **Phase 1 — Node / TS baseline bump.** Raised minimum Node to 22, TS to 5.9. [`ADR-2026-04-21-node-ts-baseline-bump.md`](docs/adr/ADR-2026-04-21-node-ts-baseline-bump.md).
+- **Phase 2 — Astro 4 → 5 upgrade.** [`ADR-2026-04-21-astro-4-to-5-upgrade.md`](docs/adr/ADR-2026-04-21-astro-4-to-5-upgrade.md).
+- **Phase 3 — Tailwind 3 → 4 migration.** CSS-first `@theme` in `src/assets/styles/tailwind.css`. [`ADR-2026-04-21-tailwind-3-to-4-migration.md`](docs/adr/ADR-2026-04-21-tailwind-3-to-4-migration.md).
+- **Phase 4 — React 18 → 19 upgrade.** [`ADR-2026-04-21-react-18-to-19-upgrade.md`](docs/adr/ADR-2026-04-21-react-18-to-19-upgrade.md).
+- **Phase 5 — CI hardening + multi-source blog.** Split CI, ESLint env override, third content source (`thomhayner.com`). [`ADR-2026-04-21-ci-hardening-split-and-eslint-env-override.md`](docs/adr/ADR-2026-04-21-ci-hardening-split-and-eslint-env-override.md), [`ADR-2026-04-21-multi-source-blog-architecture.md`](docs/adr/ADR-2026-04-21-multi-source-blog-architecture.md).
+- **Phase 6 — Detach from AstroWind template.** Renamed package, rewrote README, adopted ADR structure. [`ADR-2026-04-21-detach-from-astrowind-template.md`](docs/adr/ADR-2026-04-21-detach-from-astrowind-template.md).
 - **Phase 7 — Design evolution (in progress).** Visual rebrand: favicon, logo, OG image, typography, color tokens. Scope is intentionally open; decisions land as ADRs as they solidify.
 
 ## Common commands
@@ -52,7 +52,7 @@ npm run check    # astro check + eslint (CI parity)
 npm run fix      # eslint --fix
 ```
 
-**Prettier is gone.** It was removed from the repo (pending PR — by the time you read this it may be landed). Do not reintroduce it, do not add a `.prettierrc`, do not run `prettier`. ESLint owns formatting-adjacent concerns.
+**Prettier is gone.** It was removed from the repo. Do not reintroduce it, do not add a `.prettierrc`, do not run `prettier`. ESLint owns formatting-adjacent concerns.
 
 ## Styling conventions
 
@@ -79,5 +79,5 @@ The maintainer works with Claude agents and chip-spawned sub-tasks heavily. Some
 
 - **`LICENSE.md`** — contains dual copyright (original AstroWind © onWidget, plus current work). Do not modify the copyright lines.
 - **`src/pages/terms.md` and `src/pages/privacy.md`** — still contain template demo legal copy (AstroWind LLC address, `astrowind.vercel.app` URLs). **Do not fabricate replacement legal text.** This is deferred until the site goes public and real legal copy is written. Leave it.
-- **`astrowind:config` virtual module** and its ~15 import sites — rename is a known deferred follow-up (see detach ADR). Don't rename ad-hoc; bundle it when the rename is intentionally scoped.
+- **`astrowind:config` virtual module** and its import sites — rename is a known deferred follow-up (see detach ADR). Don't rename ad-hoc; bundle it when the rename is intentionally scoped.
 - **`vendor/integration/`** — the template-inherited Astro integration. Touch only when the change is explicitly about that integration.
