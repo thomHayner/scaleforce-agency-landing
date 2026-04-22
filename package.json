@@ -13,6 +13,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "build:og": "node scripts/build-og.mjs",
+    "prebuild": "npm run build:og",
     "check": "npm run check:astro && npm run check:eslint",
     "check:astro": "astro check",
     "check:eslint": "eslint .",
@@ -28,6 +30,7 @@
     "@fontsource-variable/inter-tight": "^5.2.7",
     "@fontsource-variable/space-grotesk": "^5.2.10",
     "@iconify-json/line-md": "^1.2.1",
+    "@resvg/resvg-js": "^2.6.2",
     "airtable": "^0.12.2",
     "astro": "^5.18.1",
     "astro-embed": "^0.13.0",
@@ -41,6 +44,7 @@
     "react-dom": "^19.2.5",
     "remark": "^15.0.1",
     "remark-html": "^16.0.1",
+    "satori": "^0.26.0",
     "unpic": "^3.18.0"
   },
   "devDependencies": {
