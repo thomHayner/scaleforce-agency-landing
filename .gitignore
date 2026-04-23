@@ -24,3 +24,8 @@ pnpm-lock.yaml
 
 .astro
 scaleforce-agency-landing.code-workspace
+
+# local tooling state (per-machine, not shared)
+.claude/
+.vercel/
+.mcp.json
