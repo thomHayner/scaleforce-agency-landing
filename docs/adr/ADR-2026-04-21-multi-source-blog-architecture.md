@@ -46,3 +46,7 @@ All three are normalized to a common `Post` shape so templates stay source-agnos
 ## Notes
 
 Retroactive capture of the design introduced in commit `d50abdb`. The `crossPostTo: ['scaleforce']` opt-in is important: syndication is pull-based and explicit, so the author controls which personal posts appear here by editing frontmatter in the source repo.
+
+## Update — 2026-04-23
+
+The source repo `thomHayner/thomHayner.com` is now private. The loader's unauthenticated GitHub API calls returned 404 and silently yielded zero syndicated posts. Fix: the loader now reads an optional `THOMHAYNER_GITHUB_TOKEN` (fine-grained PAT with `contents:read` on the source repo) and sends it as `Authorization: Bearer` on every GitHub request. Absent token → current graceful-empty behavior preserved, so CI builds without the secret (e.g. forks, GitHub Actions with its own scoped `GITHUB_TOKEN`) still pass. Production/preview Vercel environments need the secret set to render syndicated posts.
