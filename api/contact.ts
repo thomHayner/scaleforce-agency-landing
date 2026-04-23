@@ -13,6 +13,8 @@ interface ContactPayload {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// eslint-disable-next-line no-control-regex -- intentional: rejecting control chars in header-bound input
+const HAS_CTRL_RE = /[\u0000-\u001F\u007F]/;
 
 // Strip CR/LF and other control chars and clamp length so user-controlled
 // values are safe to interpolate into mail headers (e.g. Subject).
@@ -98,7 +100,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ ok: false, error: 'missing_fields' });
   }
 
-  if (!EMAIL_RE.test(email)) {
+  // Reject control chars in addition to format check — `email` becomes the
+  // Reply-To header, and EMAIL_RE only blocks whitespace.
+  if (!EMAIL_RE.test(email) || HAS_CTRL_RE.test(email)) {
     return res.status(400).json({ ok: false, error: 'invalid_email' });
   }
 
