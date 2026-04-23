@@ -15,7 +15,11 @@ Dev server defaults to `http://localhost:4321`.
 
 ## Required environment variables
 
-The build pulls content from external sources and will fail without these set (see the deploy environment in Vercel, or a local `.env` for development):
+Set these in the Vercel project (Production + Preview + Development) or in a local `.env` for development. See [`.env.example`](.env.example) for a template.
+
+### Build-time (content sources)
+
+The build pulls content from external sources and will fail without these set:
 
 | Variable | Purpose |
 | --- | --- |
@@ -24,13 +28,18 @@ The build pulls content from external sources and will fail without these set (s
 | `CONTENTFUL_PREVIEW_TOKEN` | Contentful Preview API token (draft content in preview mode). |
 | `AIRTABLE_API_KEY` | Airtable API key (legacy integration; see `src/lib/astro-airtable/`). |
 | `AIRTABLE_BASE_ID` | Airtable base id used by the legacy integration. |
-| `RESEND_API_KEY` | Resend API key used by the contact-form serverless function (`api/contact.ts`). |
-| `CONTACT_TO_EMAIL` | Destination inbox for contact-form submissions. |
-| `CONTACT_FROM_EMAIL` | Verified Resend sender used as the `From:` address on contact-form mail. |
 
 The Airtable integration is not currently wired into the default build but the env vars are still referenced by the legacy code in the repo.
 
-See [`.env.example`](.env.example) for a template.
+### Runtime (contact-form serverless function)
+
+These are consumed only by the `api/contact.ts` Vercel Function at request time. The static build does not depend on them.
+
+| Variable | Purpose |
+| --- | --- |
+| `RESEND_API_KEY` | Resend API key used by the contact-form serverless function (`api/contact.ts`). |
+| `CONTACT_TO_EMAIL` | Destination inbox for contact-form submissions. |
+| `CONTACT_FROM_EMAIL` | Verified Resend sender used as the `From:` address on contact-form mail. |
 
 ## Scripts
 

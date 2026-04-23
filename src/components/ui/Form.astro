@@ -5,7 +5,7 @@ import Button from '~/components/ui/Button.astro';
 const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } = Astro.props;
 ---
 
-<form data-contact-form novalidate>
+<form data-contact-form method="post" action="/api/contact" novalidate>
   {
     inputs &&
       inputs.map(
@@ -105,6 +105,7 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
   data-contact-success
   role="status"
   aria-live="polite"
+  tabindex="-1"
   hidden
   class="rounded-lg border border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800 p-6 text-center"
 >
@@ -194,7 +195,10 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
         const json = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: ContactErrorCode };
         if (res.ok && json.ok) {
           form.hidden = true;
-          if (successEl) successEl.hidden = false;
+          if (successEl) {
+            successEl.hidden = false;
+            successEl.focus();
+          }
           return;
         }
         showError(json.error ?? 'unknown');
