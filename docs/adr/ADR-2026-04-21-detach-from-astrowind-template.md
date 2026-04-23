@@ -70,3 +70,7 @@ Upstream is no longer tracked. Future Astro / Tailwind / dependency upgrades are
 - `astro.config.ts` was checked for template-origin `site:` URL or analytics config. The site URL lives in `src/config.yaml` (`https://ScaleForce.agency`), which is already Scaleforce-branded. `astro.config.ts` itself contains only the `astrowind` integration import (retained per the deferred virtual-module rename) and no template-origin URLs or analytics IDs.
 - `LICENSE.md` retains the original "Copyright (c) 2023 onWidget" line. The MIT license permits continued use with the original copyright notice preserved; removing it would be wrong, and adding a dual Scaleforce copyright is a decision for the user rather than this detach pass.
 - The name `scaleforce-agency-landing` matches the GitHub repo and is unscoped. Combined with `private: true`, this makes the npm namespace a non-issue: no publishing is possible.
+
+## Update (2026-04-23)
+
+The virtual-module rename deferred above was subsequently implemented in commit `8ec1407` ("chore: rename astrowind:config virtual module → site:config") and shipped in the same `dev → main` release PR (#81). The module is now `site:config`; all import sites have been updated. The "Follow-ups" bullet for that rename is therefore complete, and references to `astrowind:config` in the Decision and Alternatives sections above are preserved as the historical record of the 2026-04-21 decision, not the current module name.
