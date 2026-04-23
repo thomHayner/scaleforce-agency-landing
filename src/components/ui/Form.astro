@@ -148,8 +148,11 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
 
     function showError(code: ContactErrorCode) {
       if (!errorEl) return;
-      errorEl.textContent = ERROR_MESSAGES[code] ?? ERROR_MESSAGES.unknown;
+      // Unhide before writing so the aria-live region is in the a11y tree
+      // when the textContent change fires — some screen readers won't
+      // announce mutations on hidden nodes.
       errorEl.hidden = false;
+      errorEl.textContent = ERROR_MESSAGES[code] ?? ERROR_MESSAGES.unknown;
     }
     function clearError() {
       if (!errorEl) return;

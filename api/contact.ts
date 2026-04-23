@@ -14,6 +14,22 @@ interface ContactPayload {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Strip CR/LF and other control chars and clamp length so user-controlled
+// values are safe to interpolate into mail headers (e.g. Subject).
+function sanitizeHeader(input: string, maxLen = 120): string {
+  // eslint-disable-next-line no-control-regex -- intentional: stripping control chars is the point
+  return input.replace(/[\r\n\t\v\f\u0000-\u001F\u007F]/g, ' ').slice(0, maxLen).trim();
+}
+
+function coerceCheckbox(value: unknown): boolean {
+  if (value === true) return true;
+  if (typeof value === 'string') {
+    const v = value.toLowerCase();
+    return v === 'true' || v === 'on' || v === '1' || v === 'yes';
+  }
+  return false;
+}
+
 function escapeHtml(input: string): string {
   return input
     .replace(/&/g, '&amp;')
@@ -101,7 +117,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     message,
     company: typeof body.company === 'string' ? body.company.trim() : '',
     location: typeof body.location === 'string' ? body.location.trim() : '',
-    disclaimer: body.disclaimer === true,
+    disclaimer: coerceCheckbox(body.disclaimer),
   };
 
   try {
@@ -110,7 +126,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       from,
       to: [to],
       replyTo: email,
-      subject: `[scaleforce.agency] New contact: ${name}`,
+      subject: `[scaleforce.agency] New contact: ${sanitizeHeader(name)}`,
       html: renderHtml(payload),
       text: renderText(payload),
     });
