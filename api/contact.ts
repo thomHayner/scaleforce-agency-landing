@@ -76,13 +76,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const email = typeof body.email === 'string' ? body.email.trim() : '';
   const message = typeof body.message === 'string' ? body.message.trim() : '';
 
-  const missing: string[] = [];
-  if (!name) missing.push('name');
-  if (!email) missing.push('email');
-  if (!message) missing.push('message');
-
-  if (missing.length > 0) {
-    return res.status(400).json({ ok: false, error: 'missing_fields', fields: missing });
+  if (!name || !email || !message) {
+    return res.status(400).json({ ok: false, error: 'missing_fields' });
   }
 
   if (!EMAIL_RE.test(email)) {
