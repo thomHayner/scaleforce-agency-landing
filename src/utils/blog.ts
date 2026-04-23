@@ -1,8 +1,8 @@
 import type { PaginateFunction } from 'astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import type { FormattedContentfulPost, Post } from '~/types';
-import { APP_BLOG } from 'astrowind:config';
+import { APP_BLOG } from 'site:config';
 import { cleanSlug, trimSlash, BLOG_BASE, POST_PERMALINK_PATTERN, CATEGORY_BASE, TAG_BASE } from './permalinks';
 
 import { contentfulClient } from "../lib/contentful/contentful";
@@ -11,6 +11,8 @@ import { documentToHtmlString } from "@contentful/rich-text-html-renderer";
 
 import { loadThomhaynerPosts } from "../lib/thomhayner/thomhayner";
 import type { FormattedThomhaynerPost } from "../lib/thomhayner/thomhayner";
+
+import { getAuthorBySlug } from "../lib/authors/authors";
 
 const generatePermalink = async ({
   id,
@@ -48,8 +50,13 @@ const generatePermalink = async ({
 };
 
 const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> => {
-  const { id, slug: rawSlug = '', data } = post;
-  const { Content, remarkPluginFrontmatter } = await post.render();
+  // In Astro 5's Content Layer API, `post.id` is the slug-like identifier
+  // (e.g. "ai-agents-to-reduce-employee-turnover-1") rather than the
+  // filename-with-extension used in Astro 4. There is no separate `slug`
+  // field anymore, so the id doubles as the raw slug.
+  const { id, data } = post;
+  const rawSlug = id;
+  const { Content, remarkPluginFrontmatter } = await render(post);
 
   const {
     publishDate: rawPublishDate = new Date(),
@@ -80,6 +87,8 @@ const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> =
     title: tag,
   }));
 
+  const authorRef = await getAuthorBySlug(author);
+
   return {
     id: id,
     slug: slug,
@@ -96,6 +105,7 @@ const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> =
     category: category,
     tags: tags,
     author: author,
+    authorRef: authorRef,
 
     metadata,
 
@@ -141,6 +151,8 @@ const getNormalizedContentfulPost = async (post: FormattedContentfulPost): Promi
     title: tag,
   }));
 
+  const authorRef = await getAuthorBySlug(author);
+
   return {
     id: id,
     slug: slug,
@@ -157,6 +169,7 @@ const getNormalizedContentfulPost = async (post: FormattedContentfulPost): Promi
     category: category,
     tags: tags,
     author: author,
+    authorRef: authorRef,
 
     metadata,
 
@@ -198,6 +211,8 @@ const getNormalizedThomhaynerPost = async (post: FormattedThomhaynerPost): Promi
     title: tag,
   }));
 
+  const authorRef = await getAuthorBySlug(author);
+
   return {
     id: id,
     slug: slug,
@@ -214,6 +229,7 @@ const getNormalizedThomhaynerPost = async (post: FormattedThomhaynerPost): Promi
     category: category,
     tags: tags,
     author: author,
+    authorRef: authorRef,
 
     metadata,
 

@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { defineConfig } from 'astro/config';
 
 import sitemap from '@astrojs/sitemap';
-import tailwind from '@astrojs/tailwind';
+import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
 import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
@@ -28,9 +28,6 @@ export default defineConfig({
   output: 'static',
   
   integrations: [
-    tailwind({
-      applyBaseStyles: false
-    }),
     sitemap(),
     mdx(),
     icon({
@@ -67,7 +64,7 @@ export default defineConfig({
   ],
 
   image: {
-    domains: ['cdn.pixabay.com'],
+    domains: ['cdn.pixabay.com', 'thomhayner.com'],
   },
 
   markdown: {
@@ -76,6 +73,7 @@ export default defineConfig({
   },
   
   vite: {
+    plugins: [tailwindcss()],
     resolve: {
       alias: {
         '~': path.resolve(__dirname, './src')

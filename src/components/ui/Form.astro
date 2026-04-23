@@ -5,19 +5,7 @@ import Button from '~/components/ui/Button.astro';
 const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } = Astro.props;
 ---
 
-<form
-  data-netlify="true"
-  data-netlify-recaptcha="true"
-  netlify-honeypot
-  name="feedback"
-  method="POST"
-  action="/success"
->
-  <p class="hidden">
-    <label>
-      Don’t fill this out if you’re human: <input name="bot-field" />
-    </label>
-  </p>
+<form data-contact-form method="post" action="/api/contact" novalidate>
   {
     inputs &&
       inputs.map(
@@ -48,9 +36,10 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
         <label for="textarea" class="block text-sm font-medium">
           {textarea.label}
         </label>
+        {/* `name` is hardcoded to `message` because the client-side handler and `/api/contact` rely on that key. */}
         <textarea
           id="textarea"
-          name={textarea.name ? textarea.name : 'message'}
+          name="message"
           rows={textarea.rows ? textarea.rows : 4}
           placeholder={textarea.placeholder}
           class="py-3 px-4 block w-full text-md rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-slate-900"
@@ -58,6 +47,12 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
       </div>
     )
   }
+
+  {/* Honeypot — hidden from users and assistive tech, submitted silently if filled. */}
+  <div aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;">
+    <label for="website">Website (leave blank)</label>
+    <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" />
+  </div>
 
   {
     disclaimer && (
@@ -79,17 +74,24 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
     )
   }
 
-  <div data-netlify-recaptcha="true" class="flex justify-around mt-10"><!-- <div>captcha</div> --></div>
-
   {
     button && (
       <div class="mt-10 grid">
-        <Button variant="primary" type="submit">
+        <Button variant="primary" type="submit" data-contact-submit>
           {button}
         </Button>
       </div>
     )
   }
+
+  <div
+    data-contact-error
+    role="alert"
+    aria-live="assertive"
+    hidden
+    class="mt-4 rounded-lg border border-red-300 bg-red-50 dark:bg-red-900/20 dark:border-red-800 p-3 text-sm text-red-800 dark:text-red-200"
+  >
+  </div>
 
   {
     description && (
@@ -99,3 +101,124 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
     )
   }
 </form>
+
+<div
+  data-contact-success
+  role="status"
+  aria-live="polite"
+  tabindex="-1"
+  hidden
+  class="rounded-lg border border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800 p-6 text-center"
+>
+  <h3 class="text-lg font-semibold text-emerald-900 dark:text-emerald-100 mb-1">Message sent</h3>
+  <p class="text-sm text-emerald-800 dark:text-emerald-200">
+    Thanks — we&rsquo;ll be in touch within 24 business hours.
+  </p>
+</div>
+
+<script>
+  type ContactErrorCode =
+    | 'missing_fields'
+    | 'invalid_email'
+    | 'invalid_json'
+    | 'field_too_long'
+    | 'method_not_allowed'
+    | 'mailer_unconfigured'
+    | 'mailer_failed'
+    | 'network_error'
+    | 'unknown';
+
+  const ERROR_MESSAGES: Record<ContactErrorCode, string> = {
+    missing_fields: 'Please fill in your name, email, and message.',
+    invalid_email: 'Please enter a valid email address.',
+    invalid_json: 'Something went wrong. Please refresh and try again.',
+    field_too_long: 'One of your fields is too long. Please shorten it and try again.',
+    method_not_allowed: 'Something went wrong. Please refresh and try again.',
+    mailer_unconfigured: 'The contact form is temporarily unavailable. Please email us directly.',
+    mailer_failed: 'We couldn’t send your message. Please try again in a moment.',
+    network_error: 'Network error — please check your connection and try again.',
+    unknown: 'Something went wrong. Please try again.',
+  };
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function wireForm(form: HTMLFormElement) {
+    const errorEl = form.querySelector<HTMLElement>('[data-contact-error]');
+    const successEl = form.parentElement?.querySelector<HTMLElement>('[data-contact-success]') ?? null;
+    const submitBtn = form.querySelector<HTMLButtonElement>('[data-contact-submit]');
+    const originalLabel = submitBtn?.textContent ?? '';
+
+    function showError(code: ContactErrorCode) {
+      if (!errorEl) return;
+      // Unhide before writing so the aria-live region is in the a11y tree
+      // when the textContent change fires — some screen readers won't
+      // announce mutations on hidden nodes.
+      errorEl.hidden = false;
+      errorEl.textContent = ERROR_MESSAGES[code] ?? ERROR_MESSAGES.unknown;
+    }
+    function clearError() {
+      if (!errorEl) return;
+      errorEl.hidden = true;
+      errorEl.textContent = '';
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearError();
+
+      const data = new FormData(form);
+      const payload: Record<string, string | boolean> = {};
+      for (const [key, value] of data.entries()) {
+        if (typeof value === 'string') payload[key] = value;
+      }
+      payload.disclaimer = Boolean(data.get('disclaimer'));
+
+      // Client-side validation — mirror the server contract, no network call on empties.
+      const name = String(payload.name ?? '').trim();
+      const email = String(payload.email ?? '').trim();
+      const message = String(payload.message ?? '').trim();
+      if (!name || !email || !message) {
+        showError('missing_fields');
+        return;
+      }
+      if (!EMAIL_RE.test(email)) {
+        showError('invalid_email');
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.setAttribute('aria-disabled', 'true');
+        submitBtn.textContent = 'Sending…';
+      }
+
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const json = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: ContactErrorCode };
+        if (res.ok && json.ok) {
+          form.hidden = true;
+          if (successEl) {
+            successEl.hidden = false;
+            successEl.focus();
+          }
+          return;
+        }
+        showError(json.error ?? 'unknown');
+      } catch {
+        showError('network_error');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.removeAttribute('aria-disabled');
+          submitBtn.textContent = originalLabel;
+        }
+      }
+    });
+  }
+
+  document.querySelectorAll<HTMLFormElement>('form[data-contact-form]').forEach(wireForm);
+</script>

@@ -1,10 +1,5 @@
 // Loads syndicated blog posts from https://github.com/thomHayner/thomHayner.com.
 // Filters to posts whose frontmatter opts in via `crossPostTo: ['scaleforce']`.
-//
-// TODO(author-attribution): scaleforce's Post schema currently has `author: string` only.
-// When we introduce an `author` content type (Contentful) or a static map in
-// `src/config.yaml` with name/avatar/bio/site, wire the byline + SinglePost.astro to
-// resolve `post.author` into a richer block. For now we hardcode `author: "Thom Hayner"`.
 
 import matter from 'gray-matter';
 import { remark } from 'remark';
@@ -67,10 +62,22 @@ const resolveImage = (heroImage: string): string => {
   return `${SITE_ORIGIN}/${heroImage}`;
 };
 
+// Optional PAT (with `contents:read` on the private source repo). When present,
+// the loader authenticates its GitHub calls so syndication works against a
+// private source repo; when absent, unauthenticated requests still succeed for
+// public repos and gracefully yield zero posts for private ones.
+const GITHUB_TOKEN = import.meta.env.TH_BLOG_TOKEN;
+
+const authHeaders = (): Record<string, string> => {
+  const base: Record<string, string> = { 'User-Agent': 'scaleforce-blog-loader' };
+  if (GITHUB_TOKEN) base.Authorization = `Bearer ${GITHUB_TOKEN}`;
+  return base;
+};
+
 const fetchJson = async <T>(url: string): Promise<T | null> => {
   try {
     const res = await fetch(url, {
-      headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'scaleforce-blog-loader' },
+      headers: { ...authHeaders(), Accept: 'application/vnd.github+json' },
     });
     if (!res.ok) {
       console.warn(`[thomhayner loader] ${res.status} ${res.statusText} for ${url}`);
@@ -85,7 +92,7 @@ const fetchJson = async <T>(url: string): Promise<T | null> => {
 
 const fetchText = async (url: string): Promise<string | null> => {
   try {
-    const res = await fetch(url, { headers: { 'User-Agent': 'scaleforce-blog-loader' } });
+    const res = await fetch(url, { headers: authHeaders() });
     if (!res.ok) {
       console.warn(`[thomhayner loader] ${res.status} ${res.statusText} for ${url}`);
       return null;
@@ -140,7 +147,7 @@ const buildPost = async (
       image,
       category,
       tags,
-      author: 'Thom Hayner',
+      author: 'thom-hayner',
       metadata: {
         canonical,
         ...(image && fm.heroImageAlt

@@ -4,7 +4,7 @@ import { Icon } from 'astro-icon/components';
 import Image from '~/components/common/Image.astro';
 import PostTags from '~/components/blog/Tags.astro';
 
-import { APP_BLOG } from 'astrowind:config';
+import { APP_BLOG } from 'site:config';
 import type { Post } from '~/types';
 
 import { getPermalink } from '~/utils/permalinks';
@@ -67,11 +67,11 @@ const link = APP_BLOG?.post?.isEnabled ? getPermalink(post.permalink, 'post') : 
           <Icon name="tabler:clock" class="w-3.5 h-3.5 inline-block -mt-0.5 dark:text-gray-400" />
           <time datetime={String(post.publishDate)} class="inline-block">{getFormattedDate(post.publishDate)}</time>
           {
-            post.author && (
+            (post.authorRef?.name || post.author) && (
               <>
                 {' '}
                 · <Icon name="tabler:user" class="w-3.5 h-3.5 inline-block -mt-0.5 dark:text-gray-400" />
-                <span>{post.author.replaceAll('-', ' ')}</span>
+                <span>{post.authorRef?.name ?? post.author?.replaceAll('-', ' ')}</span>
               </>
             )
           }
