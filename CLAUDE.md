@@ -190,6 +190,14 @@ Produce a triage list, not autonomous edits. The user approves before anything c
 - **When uncertain where a fact belongs**, surface the question to the user instead of forcing a bad filing. An incorrectly filed page is harder to fix than a deferred one.
 - **Scaffolding is not ingestion.** Setting up `wiki/` (via the `repo-wiki-scaffold` skill) creates the structure. Populating it is a separate operation the user initiates explicitly.
 
+## External services
+
+### Contentful
+
+- **Prod space:** `7g58d179e6zy`, owned by `ScaleForce.agency@gmail.com` (the agency account). This is the space the Vercel env vars (`CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`, `CONTENTFUL_PREVIEW_TOKEN`) point to — and where the blog posts rendered on the live site actually live.
+- **Secondary space:** `6nl1hhwpn852` ("ScaleForce.agency", org "HRG Interactive"), visible to `thom.hayner@gmail.com`. Not the prod source — treat as legacy/secondary unless something changes.
+- `thom.hayner@gmail.com` has been added as a member to the prod space, so the Contentful MCP (when authed as that Gmail) can see both spaces. If MCP tool calls still only return the secondary space, the MCP session needs to be re-authenticated to pick up the new membership.
+
 ## What NOT to touch without asking
 
 - **`LICENSE.md`** — contains dual copyright (original AstroWind © onWidget, plus current work). Do not modify the copyright lines.
