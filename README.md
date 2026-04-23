@@ -64,7 +64,7 @@ These are consumed only by the `api/contact.ts` Vercel Function at request time.
 - [Astro 5](https://astro.build/) — static-site generation, content collections, image pipeline.
 - [Tailwind CSS 4](https://tailwindcss.com/) — CSS-first theme via `@tailwindcss/vite`.
 - [TypeScript 5.9](https://www.typescriptlang.org/) — strict mode.
-- [React 19](https://react.dev/) — used for Calendly embeds and isolated interactive components.
+- [React 19](https://react.dev/) — installed dependency for legacy/planned widget work (e.g. the unwired `Calendly.astro`); not currently wired into the active Astro runtime/bundle.
 - [Node 22+](https://nodejs.org/) — required runtime for local dev and CI.
 - [Contentful](https://www.contentful.com/) — CMS for blog / case-study content.
 - [Vercel](https://vercel.com/) — production hosting.

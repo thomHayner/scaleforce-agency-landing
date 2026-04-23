@@ -200,7 +200,7 @@ Produce a triage list, not autonomous edits. The user approves before anything c
 
 ## What NOT to touch without asking
 
-- **`LICENSE.md`** — contains dual copyright (original AstroWind © onWidget, plus current work). Do not modify the copyright lines.
+- **`LICENSE.md`** — contains dual copyright (original AstroWind © onWidget, plus current ScaleForce line). Don't rewrite or reshuffle the copyright lines again without asking.
 - **`src/pages/terms.md` and `src/pages/privacy.md`** — still contain template demo legal copy (AstroWind LLC address, `astrowind.vercel.app` URLs). **Do not fabricate replacement legal text.** This is deferred until the site goes public and real legal copy is written. Leave it.
-- **`astrowind:config` virtual module** and its import sites — rename is a known deferred follow-up (see detach ADR). Don't rename ad-hoc; bundle it when the rename is intentionally scoped.
+- **`site:config` virtual module** and its import sites — treat the current name/layout as settled. Don't rename or rework it ad-hoc without asking.
 - **`vendor/integration/`** — the template-inherited Astro integration. Touch only when the change is explicitly about that integration.

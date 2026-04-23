@@ -78,8 +78,10 @@ Regenerated at build time by [`scripts/build-og.mjs`](../../scripts/build-og.mjs
 `@resvg/resvg-js`. Output: [`src/assets/images/default.png`](../../src/assets/images/default.png) (1200×630).
 
 - Runs automatically via `prebuild` npm hook.
-- Fonts are fetched once from Google Fonts and cached under
-  `scripts/.fonts-cache/` (gitignored).
+- Fonts are resolved from installed `@fontsource/*` packages
+  (`@fontsource/space-grotesk`, `@fontsource/inter-tight`) by the build
+  script — they're not fetched from Google Fonts at build time, and there's
+  no `scripts/.fonts-cache/` cache directory involved.
 - Brand tokens are currently **duplicated** inside the script as plain hex
   constants. Keep them in sync with [`CustomStyles.astro`](../../src/components/CustomStyles.astro) when the palette
   shifts — there's no runtime token source the build script can read, and
