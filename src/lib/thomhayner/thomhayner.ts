@@ -62,10 +62,22 @@ const resolveImage = (heroImage: string): string => {
   return `${SITE_ORIGIN}/${heroImage}`;
 };
 
+// Optional PAT (with `contents:read` on the private source repo). When present,
+// the loader authenticates its GitHub calls so syndication works against a
+// private source repo; when absent, unauthenticated requests still succeed for
+// public repos and gracefully yield zero posts for private ones.
+const GITHUB_TOKEN = import.meta.env.TH_BLOG_TOKEN;
+
+const authHeaders = (): Record<string, string> => {
+  const base: Record<string, string> = { 'User-Agent': 'scaleforce-blog-loader' };
+  if (GITHUB_TOKEN) base.Authorization = `Bearer ${GITHUB_TOKEN}`;
+  return base;
+};
+
 const fetchJson = async <T>(url: string): Promise<T | null> => {
   try {
     const res = await fetch(url, {
-      headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'scaleforce-blog-loader' },
+      headers: { ...authHeaders(), Accept: 'application/vnd.github+json' },
     });
     if (!res.ok) {
       console.warn(`[thomhayner loader] ${res.status} ${res.statusText} for ${url}`);
@@ -80,7 +92,7 @@ const fetchJson = async <T>(url: string): Promise<T | null> => {
 
 const fetchText = async (url: string): Promise<string | null> => {
   try {
-    const res = await fetch(url, { headers: { 'User-Agent': 'scaleforce-blog-loader' } });
+    const res = await fetch(url, { headers: authHeaders() });
     if (!res.ok) {
       console.warn(`[thomhayner loader] ${res.status} ${res.statusText} for ${url}`);
       return null;
