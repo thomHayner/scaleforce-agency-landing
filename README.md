@@ -26,10 +26,15 @@ The build pulls content from external sources and will fail without these set:
 | `CONTENTFUL_SPACE_ID` | Contentful space for CMS-authored blog posts and case studies. |
 | `CONTENTFUL_DELIVERY_TOKEN` | Contentful Content Delivery API token (published content). |
 | `CONTENTFUL_PREVIEW_TOKEN` | Contentful Preview API token (draft content in preview mode). |
-| `AIRTABLE_API_KEY` | Airtable API key (legacy integration; see `src/lib/astro-airtable/`). |
-| `AIRTABLE_BASE_ID` | Airtable base id used by the legacy integration. |
 
-The Airtable integration is not currently wired into the default build but the env vars are still referenced by the legacy code in the repo.
+### Legacy / optional
+
+These are referenced only by the unwired Airtable integration under `src/lib/astro-airtable/`. They default to empty strings and the build does not require them. Set them only if you re-enable that integration.
+
+| Variable | Purpose |
+| --- | --- |
+| `AIRTABLE_API_KEY` | Airtable API key (legacy integration). |
+| `AIRTABLE_BASE_ID` | Airtable base id (legacy integration). |
 
 ### Runtime (contact-form serverless function)
 

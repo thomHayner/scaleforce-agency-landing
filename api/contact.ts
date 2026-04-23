@@ -29,6 +29,7 @@ function renderHtml(payload: Required<Pick<ContactPayload, 'name' | 'email' | 'm
     ['Email', payload.email],
     ['Company', payload.company || '—'],
     ['Location', payload.location || '—'],
+    ['Disclaimer accepted', payload.disclaimer ? 'Yes' : 'No'],
   ]
     .map(([label, value]) => `<tr><td style="padding:4px 12px 4px 0;color:#64748b;">${label}</td><td style="padding:4px 0;">${escapeHtml(String(value))}</td></tr>`)
     .join('');
@@ -48,6 +49,7 @@ function renderText(payload: Required<Pick<ContactPayload, 'name' | 'email' | 'm
     `Email: ${payload.email}`,
     `Company: ${payload.company || '—'}`,
     `Location: ${payload.location || '—'}`,
+    `Disclaimer accepted: ${payload.disclaimer ? 'Yes' : 'No'}`,
     ``,
     `Message:`,
     payload.message,
