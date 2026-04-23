@@ -54,5 +54,5 @@ Required runtime env (Production + Preview + Development in the Vercel project):
 ## Notes
 
 - File layout: `api/contact.ts` (serverless handler), `src/components/ui/Form.astro` (client-side submit + UX), `.env.example` (documents the three new env vars).
-- Error taxonomy: `400 missing_fields`, `400 invalid_email`, `400 invalid_json`, `405 method_not_allowed`, `502 mailer_unconfigured`, `502 mailer_failed`, `200 ok` (including the honeypot silent-success path).
+- Error taxonomy: `400 missing_fields`, `400 invalid_email`, `400 invalid_json`, `400 field_too_long`, `405 method_not_allowed`, `502 mailer_unconfigured`, `502 mailer_failed`, `200 ok` (including the honeypot silent-success path).
 - The handler uses `replyTo: email` so the destination inbox can reply directly to the submitter.

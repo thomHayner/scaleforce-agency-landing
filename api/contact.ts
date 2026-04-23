@@ -16,6 +16,16 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // eslint-disable-next-line no-control-regex -- intentional: rejecting control chars in header-bound input
 const HAS_CTRL_RE = /[\u0000-\u001F\u007F]/;
 
+// Caps on user-controlled fields — bounds request size and outbound email size
+// for a public endpoint. Email max follows RFC 5321 local+domain limits.
+const MAX_LEN = {
+  name: 200,
+  email: 254,
+  message: 5000,
+  company: 200,
+  location: 200,
+} as const;
+
 // Strip CR/LF and other control chars and clamp length so user-controlled
 // values are safe to interpolate into mail headers (e.g. Subject).
 function sanitizeHeader(input: string, maxLen = 120): string {
@@ -114,6 +124,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ ok: false, error: 'invalid_email' });
   }
 
+  const company = typeof body.company === 'string' ? body.company.trim() : '';
+  const location = typeof body.location === 'string' ? body.location.trim() : '';
+
+  if (
+    name.length > MAX_LEN.name ||
+    email.length > MAX_LEN.email ||
+    message.length > MAX_LEN.message ||
+    company.length > MAX_LEN.company ||
+    location.length > MAX_LEN.location
+  ) {
+    return res.status(400).json({ ok: false, error: 'field_too_long' });
+  }
+
   const apiKey = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO_EMAIL;
   const from = process.env.CONTACT_FROM_EMAIL;
@@ -127,8 +150,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     name,
     email,
     message,
-    company: typeof body.company === 'string' ? body.company.trim() : '',
-    location: typeof body.location === 'string' ? body.location.trim() : '',
+    company,
+    location,
     disclaimer: coerceCheckbox(body.disclaimer),
   };
 
