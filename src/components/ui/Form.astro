@@ -188,7 +188,7 @@ const { inputs, textarea, disclaimer, button = 'Contact us', description = '' } 
       }
 
       try {
-        const res = await fetch('/api/contact', {
+        const res = await fetch(form.action, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify(payload),

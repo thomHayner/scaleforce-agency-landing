@@ -101,6 +101,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     message,
     company: typeof body.company === 'string' ? body.company.trim() : '',
     location: typeof body.location === 'string' ? body.location.trim() : '',
+    disclaimer: body.disclaimer === true,
   };
 
   try {
