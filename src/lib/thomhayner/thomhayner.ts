@@ -66,7 +66,7 @@ const resolveImage = (heroImage: string): string => {
 // the loader authenticates its GitHub calls so syndication works against a
 // private source repo; when absent, unauthenticated requests still succeed for
 // public repos and gracefully yield zero posts for private ones.
-const GITHUB_TOKEN = import.meta.env.THOMHAYNER_GITHUB_TOKEN;
+const GITHUB_TOKEN = import.meta.env.TH_BLOG_TOKEN;
 
 const authHeaders = (): Record<string, string> => {
   const base: Record<string, string> = { 'User-Agent': 'scaleforce-blog-loader' };
