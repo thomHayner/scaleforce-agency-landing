@@ -80,12 +80,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ ok: false, error: 'method_not_allowed' });
   }
 
-  let body: ContactPayload;
+  let parsed: unknown;
   try {
-    body = typeof req.body === 'string' ? JSON.parse(req.body) : (req.body ?? {});
+    parsed = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
   } catch {
     return res.status(400).json({ ok: false, error: 'invalid_json' });
   }
+  // Normalize to a plain object — reject null, primitives, and arrays so the
+  // downstream property accesses can't throw on a JSON payload of `null` / `true` / `"str"`.
+  if (parsed === undefined) {
+    parsed = {};
+  } else if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    return res.status(400).json({ ok: false, error: 'invalid_json' });
+  }
+  const body = parsed as ContactPayload;
 
   // Honeypot — silently succeed without sending.
   if (typeof body.website === 'string' && body.website.trim() !== '') {
