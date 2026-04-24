@@ -24,7 +24,6 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
-    "@astrolib/analytics": "^0.6.1",
     "@astrolib/seo": "^1.0.0-beta.8",
     "@contentful/rich-text-html-renderer": "^16.6.1",
     "@fontsource-variable/inter-tight": "^5.2.7",
