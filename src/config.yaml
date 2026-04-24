@@ -63,12 +63,5 @@ apps:
     isRelatedPostsEnabled: true
     relatedPostsCount: 4
 
-analytics:
-  vendors:
-    googleAnalytics:
-      id: null #G-XXXXXXXXXX
-    googleTagManager:
-      id: GTM-MQF864VV
-
 ui:
   theme: 'system' # Values: "system" | "light" | "dark" | "light:only" | "dark:only"
