@@ -59,7 +59,7 @@ const getNormalizedPost = async (post: CollectionEntry<'post'>): Promise<Post> =
   const { Content, remarkPluginFrontmatter } = await render(post);
 
   const {
-    publishDate: rawPublishDate = new Date(),
+    publishDate: rawPublishDate = new Date(0),
     updateDate: rawUpdateDate,
     title,
     excerpt,
@@ -122,7 +122,7 @@ const getNormalizedContentfulPost = async (post: FormattedContentfulPost): Promi
 
 
   const {
-    publishDate: rawPublishDate = new Date(),
+    publishDate: rawPublishDate = new Date(0),
     updateDate: rawUpdateDate,
     title,
     excerpt,
@@ -183,7 +183,7 @@ const getNormalizedThomhaynerPost = async (post: FormattedThomhaynerPost): Promi
   const { id, slug: rawSlug = '', data, body } = post;
 
   const {
-    publishDate: rawPublishDate = new Date(),
+    publishDate: rawPublishDate = new Date(0),
     updateDate: rawUpdateDate,
     title,
     excerpt,
@@ -279,7 +279,7 @@ const load = async function (): Promise<Array<Post>> {
 
   const combinedPosts = [...normalizedLocalPosts, ...normalizedContentfulPosts, ...normalizedThomhaynerPosts];
   const results = (await Promise.all(combinedPosts))
-    .sort((a, b) => a.publishDate.valueOf() - b.publishDate.valueOf())
+    .sort((a, b) => b.publishDate.valueOf() - a.publishDate.valueOf())
     .filter((post) => !post.draft);
 
   return results;
