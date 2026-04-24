@@ -279,7 +279,7 @@ const load = async function (): Promise<Array<Post>> {
 
   const combinedPosts = [...normalizedLocalPosts, ...normalizedContentfulPosts, ...normalizedThomhaynerPosts];
   const results = (await Promise.all(combinedPosts))
-    .sort((a, b) => a.publishDate.valueOf() - b.publishDate.valueOf())
+    .sort((a, b) => b.publishDate.valueOf() - a.publishDate.valueOf())
     .filter((post) => !post.draft);
 
   return results;

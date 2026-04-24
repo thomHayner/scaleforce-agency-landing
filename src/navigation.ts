@@ -37,6 +37,10 @@ export const headerData = {
           text: 'Use Cases',
           href: getPermalink('use-cases', 'category'),
         },
+        {
+          text: 'Claude Skills',
+          href: getPermalink('claude-skills', 'category'),
+        },
     //     {
     //       text: 'Tags',
     //       href: getPermalink('astro', 'tag'),
