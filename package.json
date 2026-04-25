@@ -50,7 +50,6 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
     "@astrojs/mdx": "^4.3.14",
-    "@astrojs/partytown": "^2.1.7",
     "@eslint/js": "^9.10.0",
     "@fontsource/inter-tight": "^5.2.7",
     "@fontsource/space-grotesk": "^5.2.10",

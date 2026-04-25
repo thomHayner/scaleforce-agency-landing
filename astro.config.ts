@@ -6,10 +6,8 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import mdx from '@astrojs/mdx';
-import partytown from '@astrojs/partytown';
 import icon from 'astro-icon';
 import compress from 'astro-compress';
-import type { AstroIntegration } from 'astro';
 
 import astrowind from './vendor/integration';
 
@@ -18,10 +16,6 @@ import { readingTimeRemarkPlugin, responsiveTablesRehypePlugin, lazyImagesRehype
 // import astroAirtable from './src/lib/astro-airtable/astro-airtable';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-const hasExternalScripts = false;
-const whenExternalScripts = (items: (() => AstroIntegration) | (() => AstroIntegration)[] = []) =>
-  hasExternalScripts ? (Array.isArray(items) ? items.map((item) => item()) : [items()]) : [];
 
 // https://astro.build/config
 export default defineConfig({
@@ -36,13 +30,7 @@ export default defineConfig({
         'line-md': ['*'],
       }
     }),
-    
-    ...whenExternalScripts(() => partytown({
-      config: {
-        forward: ['dataLayer.push']
-      }
-    })),
-    
+
     compress({
       CSS: true,
       HTML: {
