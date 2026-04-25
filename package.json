@@ -24,7 +24,6 @@
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.2",
-    "@astrolib/analytics": "^0.6.1",
     "@astrolib/seo": "^1.0.0-beta.8",
     "@contentful/rich-text-html-renderer": "^16.6.1",
     "@fontsource-variable/inter-tight": "^5.2.7",
@@ -51,7 +50,6 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
     "@astrojs/mdx": "^4.3.14",
-    "@astrojs/partytown": "^2.1.7",
     "@eslint/js": "^9.10.0",
     "@fontsource/inter-tight": "^5.2.7",
     "@fontsource/space-grotesk": "^5.2.10",

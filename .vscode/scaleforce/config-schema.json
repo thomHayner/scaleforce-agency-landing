@@ -236,40 +236,6 @@
       },
       "required": ["blog"]
     },
-    "analytics": {
-      "type": "object",
-      "properties": {
-        "vendors": {
-          "type": "object",
-          "properties": {
-            "googleAnalytics": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": ["string", "null"]
-                },
-                "partytown": {
-                  "type": "boolean",
-                  "default": true
-                }
-              },
-              "required": ["id"]
-            },
-            "googleTagManager": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": ["string", "null"]
-                }
-              },
-              "required": ["id"]
-            }
-          },
-          "required": ["googleAnalytics", "googleTagManager"]
-        }
-      },
-      "required": ["vendors"]
-    },
     "ui": {
       "type": "object",
       "properties": {
@@ -280,5 +246,5 @@
       "required": ["theme"]
     }
   },
-  "required": ["site", "metadata", "i18n", "apps", "analytics", "ui"]
+  "required": ["site", "metadata", "i18n", "apps", "ui"]
 }
