@@ -8,7 +8,7 @@
     "editor.defaultFormatter": "astro-build.astro-vscode"
   },
   "yaml.schemas": {
-    "./.vscode/astrowind/config-schema.json": "/src/config.yaml"
+    "./.vscode/scaleforce/config-schema.json": "/src/config.yaml"
   },
   "eslint.useFlatConfig": true
 }
