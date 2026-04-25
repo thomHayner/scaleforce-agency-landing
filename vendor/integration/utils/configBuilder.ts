@@ -10,7 +10,6 @@ export type Config = {
     blog?: AppBlogConfig;
   };
   ui?: unknown;
-  analytics?: unknown;
 };
 
 export interface SiteConfig {
@@ -69,18 +68,6 @@ export interface AppBlogConfig {
     };
   };
 }
-export interface AnalyticsConfig {
-  vendors: {
-    googleAnalytics: {
-      id?: string;
-      partytown?: boolean;
-    };
-    googleTagManager: {
-      id?: string;
-    };
-  };
-}
-
 export interface UIConfig {
   theme: string;
 }
@@ -183,27 +170,10 @@ const getUI = (config: Config) => {
   return merge({}, _default, config?.ui ?? {});
 };
 
-const getAnalytics = (config: Config) => {
-  const _default = {
-    vendors: {
-      googleAnalytics: {
-        id: undefined,
-        partytown: true,
-      },
-      googleTagManager: {
-        id: undefined,
-      },
-    },
-  };
-
-  return merge({}, _default, config?.analytics ?? {}) as AnalyticsConfig;
-};
-
 export default (config: Config) => ({
   SITE: getSite(config),
   I18N: getI18N(config),
   METADATA: getMetadata(config),
   APP_BLOG: getAppBlog(config),
   UI: getUI(config),
-  ANALYTICS: getAnalytics(config),
 });
