@@ -1,5 +1,5 @@
 declare module 'site:config' {
-  import type { SiteConfig, I18NConfig, MetaDataConfig, AppBlogConfig, UIConfig } from './config';
+  import type { SiteConfig, I18NConfig, MetaDataConfig, AppBlogConfig, UIConfig } from './utils/configBuilder';
 
   export const SITE: SiteConfig;
   export const I18N: I18NConfig;
